@@ -1,0 +1,539 @@
+{% comment %}
+  La Camille - Premium FAQ Accordion
+  Elegant, animated FAQ section with search and filtering
+{% endcomment %}
+
+<div class="faq-section" id="faq-{{ section.id }}">
+  <div class="faq-container">
+    <div class="faq-header">
+      <h2 class="faq-title">{{ section.settings.title }}</h2>
+      {% if section.settings.subtitle != blank %}
+        <p class="faq-subtitle">{{ section.settings.subtitle }}</p>
+      {% endif %}
+
+      {% if section.settings.enable_search %}
+        <div class="faq-search">
+          <input type="text"
+                 id="faqSearch"
+                 class="faq-search-input"
+                 placeholder="{{ section.settings.search_placeholder }}"
+                 aria-label="Search FAQs">
+          <svg class="faq-search-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <circle cx="11" cy="11" r="8"></circle>
+            <path d="m21 21-4.35-4.35"></path>
+          </svg>
+        </div>
+      {% endif %}
+    </div>
+
+    {% if section.settings.enable_categories %}
+      <div class="faq-categories">
+        <button class="faq-category-btn active" data-category="all">All</button>
+        {% for block in section.blocks %}
+          {% if block.type == 'category' %}
+            <button class="faq-category-btn" data-category="{{ block.settings.category_name }}">
+              {{ block.settings.category_name }}
+            </button>
+          {% endif %}
+        {% endfor %}
+      </div>
+    {% endif %}
+
+    <div class="faq-accordion" id="faqAccordion">
+      {% for block in section.blocks %}
+        {% if block.type == 'question' %}
+          <div class="faq-item"
+               data-category="{{ block.settings.faq_category | default: 'general' }}"
+               data-question="{{ block.settings.question | downcase }}">
+
+            <button class="faq-question" aria-expanded="false">
+              <span class="faq-question-text">{{ block.settings.question }}</span>
+              <span class="faq-icon">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <polyline points="6 9 12 15 18 9"></polyline>
+                </svg>
+              </span>
+            </button>
+
+            <div class="faq-answer">
+              <div class="faq-answer-content">
+                {{ block.settings.answer }}
+              </div>
+            </div>
+          </div>
+        {% endif %}
+      {% endfor %}
+    </div>
+
+    {% if section.settings.contact_cta_text != blank %}
+      <div class="faq-contact-cta">
+        <p class="faq-contact-text">{{ section.settings.contact_cta_text }}</p>
+        <a href="{{ section.settings.contact_cta_link }}" class="btn btn-secondary">
+          {{ section.settings.contact_cta_button }}
+        </a>
+      </div>
+    {% endif %}
+  </div>
+</div>
+
+<script>
+  document.addEventListener('DOMContentLoaded', () => {
+    const faqSection = document.getElementById('faq-{{ section.id }}');
+    if (!faqSection) return;
+
+    // FAQ Accordion functionality
+    class FAQAccordion {
+      constructor(section) {
+        this.section = section;
+        this.accordion = section.querySelector('#faqAccordion');
+        this.items = section.querySelectorAll('.faq-item');
+        this.questions = section.querySelectorAll('.faq-question');
+        this.searchInput = document.getElementById('faqSearch');
+        this.categoryButtons = section.querySelectorAll('.faq-category-btn');
+
+        this.init();
+      }
+
+      init() {
+        this.setupAccordion();
+        this.setupSearch();
+        this.setupCategories();
+      }
+
+      setupAccordion() {
+        this.questions.forEach(question => {
+          question.addEventListener('click', () => {
+            const item = question.closest('.faq-item');
+            const isOpen = item.classList.contains('active');
+
+            // Close all other items
+            this.items.forEach(otherItem => {
+              if (otherItem !== item) {
+                otherItem.classList.remove('active');
+                otherItem.querySelector('.faq-question').setAttribute('aria-expanded', 'false');
+              }
+            });
+
+            // Toggle current item
+            item.classList.toggle('active');
+            question.setAttribute('aria-expanded', !isOpen);
+          });
+        });
+      }
+
+      setupSearch() {
+        if (!this.searchInput) return;
+
+        this.searchInput.addEventListener('input', (e) => {
+          const searchTerm = e.target.value.toLowerCase().trim();
+
+          if (searchTerm === '') {
+            // Show all items
+            this.items.forEach(item => {
+              item.style.display = 'block';
+            });
+          } else {
+            // Filter items based on search
+            this.items.forEach(item => {
+              const questionText = item.querySelector('.faq-question-text').textContent.toLowerCase();
+              const answerText = item.querySelector('.faq-answer-content').textContent.toLowerCase();
+
+              if (questionText.includes(searchTerm) || answerText.includes(searchTerm)) {
+                item.style.display = 'block';
+              } else {
+                item.style.display = 'none';
+              }
+            });
+          }
+        });
+      }
+
+      setupCategories() {
+        if (this.categoryButtons.length === 0) return;
+
+        this.categoryButtons.forEach(button => {
+          button.addEventListener('click', () => {
+            const category = button.dataset.category;
+
+            // Update active button
+            this.categoryButtons.forEach(btn => btn.classList.remove('active'));
+            button.classList.add('active');
+
+            // Filter items
+            this.items.forEach(item => {
+              if (category === 'all' || item.dataset.category === category) {
+                item.style.display = 'block';
+              } else {
+                item.style.display = 'none';
+              }
+            });
+          });
+        });
+      }
+    }
+
+    new FAQAccordion(faqSection);
+  });
+</script>
+
+<style>
+  .faq-section {
+    padding: var(--spacing-xl) var(--spacing-md);
+    background: var(--color-cream);
+  }
+
+  .faq-container {
+    max-width: 900px;
+    margin: 0 auto;
+  }
+
+  .faq-header {
+    text-align: center;
+    margin-bottom: 3rem;
+  }
+
+  .faq-title {
+    font-family: var(--font-heading);
+    font-size: clamp(2rem, 5vw, 3rem);
+    font-weight: 400;
+    color: var(--color-text);
+    margin: 0 0 1rem 0;
+    line-height: 1.2;
+  }
+
+  .faq-subtitle {
+    font-size: 1.1rem;
+    color: var(--color-text-light);
+    margin: 0 0 2rem 0;
+    max-width: 600px;
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+  .faq-search {
+    position: relative;
+    max-width: 500px;
+    margin: 0 auto;
+  }
+
+  .faq-search-input {
+    width: 100%;
+    padding: 1rem 3rem 1rem 1.5rem;
+    border: 2px solid var(--color-blush);
+    border-radius: 30px;
+    font-family: var(--font-body);
+    font-size: 1rem;
+    color: var(--color-text);
+    background: var(--color-white);
+    transition: all 0.3s ease;
+  }
+
+  .faq-search-input:focus {
+    outline: none;
+    border-color: var(--color-champagne);
+    box-shadow: 0 4px 12px rgba(212, 175, 55, 0.1);
+  }
+
+  .faq-search-icon {
+    position: absolute;
+    right: 1.5rem;
+    top: 50%;
+    transform: translateY(-50%);
+    color: var(--color-text-light);
+    pointer-events: none;
+  }
+
+  .faq-categories {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 1rem;
+    margin-bottom: 2rem;
+  }
+
+  .faq-category-btn {
+    padding: 0.75rem 1.5rem;
+    background: var(--color-white);
+    border: 1px solid var(--color-blush);
+    border-radius: 20px;
+    font-family: var(--font-body);
+    font-size: 0.9rem;
+    color: var(--color-text);
+    cursor: pointer;
+    transition: all 0.3s ease;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+  }
+
+  .faq-category-btn:hover {
+    border-color: var(--color-champagne);
+    color: var(--color-champagne);
+  }
+
+  .faq-category-btn.active {
+    background: var(--color-champagne);
+    border-color: var(--color-champagne);
+    color: var(--color-white);
+  }
+
+  .faq-accordion {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+  }
+
+  .faq-item {
+    background: var(--color-white);
+    border-radius: 12px;
+    overflow: hidden;
+    transition: all 0.3s ease;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+  }
+
+  .faq-item:hover {
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
+  }
+
+  .faq-item.active {
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.1);
+  }
+
+  .faq-question {
+    width: 100%;
+    padding: 1.5rem;
+    background: none;
+    border: none;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    cursor: pointer;
+    text-align: left;
+    gap: 1rem;
+  }
+
+  .faq-question-text {
+    font-size: 1.1rem;
+    font-weight: 500;
+    color: var(--color-text);
+    flex: 1;
+  }
+
+  .faq-icon {
+    flex-shrink: 0;
+    width: 24px;
+    height: 24px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: transform 0.3s ease;
+  }
+
+  .faq-item.active .faq-icon {
+    transform: rotate(180deg);
+  }
+
+  .faq-icon svg {
+    color: var(--color-champagne);
+  }
+
+  .faq-answer {
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  .faq-item.active .faq-answer {
+    max-height: 500px;
+  }
+
+  .faq-answer-content {
+    padding: 0 1.5rem 1.5rem;
+    color: var(--color-text-light);
+    line-height: 1.7;
+  }
+
+  .faq-answer-content p {
+    margin: 0 0 1rem 0;
+  }
+
+  .faq-answer-content p:last-child {
+    margin: 0;
+  }
+
+  .faq-contact-cta {
+    text-align: center;
+    margin-top: 3rem;
+    padding: 2rem;
+    background: var(--color-blush-light);
+    border-radius: 12px;
+  }
+
+  .faq-contact-text {
+    font-size: 1.1rem;
+    color: var(--color-text);
+    margin: 0 0 1.5rem 0;
+  }
+
+  @media (max-width: 768px) {
+    .faq-section {
+      padding: var(--spacing-lg) var(--spacing-md);
+    }
+
+    .faq-title {
+      font-size: 1.8rem;
+    }
+
+    .faq-question {
+      padding: 1.25rem;
+    }
+
+    .faq-question-text {
+      font-size: 1rem;
+    }
+
+    .faq-answer-content {
+      padding: 0 1.25rem 1.25rem;
+    }
+
+    .faq-categories {
+      gap: 0.75rem;
+    }
+
+    .faq-category-btn {
+      padding: 0.65rem 1.25rem;
+      font-size: 0.85rem;
+    }
+  }
+</style>
+
+{% schema %}
+{
+  "name": "FAQ Accordion",
+  "tag": "section",
+  "class": "section-faq",
+  "settings": [
+    {
+      "type": "text",
+      "id": "title",
+      "label": "Title",
+      "default": "Frequently Asked Questions"
+    },
+    {
+      "type": "text",
+      "id": "subtitle",
+      "label": "Subtitle",
+      "default": "Find answers to common questions about our products, shipping, and returns."
+    },
+    {
+      "type": "checkbox",
+      "id": "enable_search",
+      "label": "Enable search",
+      "default": true
+    },
+    {
+      "type": "text",
+      "id": "search_placeholder",
+      "label": "Search placeholder",
+      "default": "Search for answers..."
+    },
+    {
+      "type": "checkbox",
+      "id": "enable_categories",
+      "label": "Enable categories",
+      "default": true
+    },
+    {
+      "type": "text",
+      "id": "contact_cta_text",
+      "label": "Contact CTA text",
+      "default": "Still have questions? We're here to help."
+    },
+    {
+      "type": "text",
+      "id": "contact_cta_button",
+      "label": "Contact CTA button",
+      "default": "Contact Us"
+    },
+    {
+      "type": "url",
+      "id": "contact_cta_link",
+      "label": "Contact CTA link",
+      "default": "/pages/contact"
+    }
+  ],
+  "blocks": [
+    {
+      "type": "category",
+      "name": "Category",
+      "settings": [
+        {
+          "type": "text",
+          "id": "category_name",
+          "label": "Category name",
+          "default": "General"
+        }
+      ]
+    },
+    {
+      "type": "question",
+      "name": "Question",
+      "settings": [
+        {
+          "type": "text",
+          "id": "question",
+          "label": "Question",
+          "default": "What is your return policy?"
+        },
+        {
+          "type": "richtext",
+          "id": "answer",
+          "label": "Answer",
+          "default": "<p>We offer a 30-day return policy for all items in original condition.</p>"
+        },
+        {
+          "type": "text",
+          "id": "faq_category",
+          "label": "Category",
+          "default": "general",
+          "info": "Must match a category name above"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "FAQ Accordion",
+      "category": "La Camille",
+      "blocks": [
+        {
+          "type": "category",
+          "settings": {
+            "category_name": "General"
+          }
+        },
+        {
+          "type": "category",
+          "settings": {
+            "category_name": "Shipping"
+          }
+        },
+        {
+          "type": "category",
+          "settings": {
+            "category_name": "Returns"
+          }
+        },
+        {
+          "type": "question"
+        },
+        {
+          "type": "question"
+        },
+        {
+          "type": "question"
+        }
+      ]
+    }
+  ]
+}
+{% endschema %}

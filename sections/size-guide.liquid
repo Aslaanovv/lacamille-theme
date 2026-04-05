@@ -1,0 +1,681 @@
+{% comment %}
+  La Camille - Size Guide Modal
+  Comprehensive sizing information for luxury lingerie
+{% endcomment %}
+
+<div class="size-guide-overlay" id="sizeGuideOverlay"></div>
+
+<div class="size-guide-modal" id="sizeGuideModal">
+  <div class="size-guide-header">
+    <h2 class="size-guide-title">Size Guide</h2>
+    <button class="size-guide-close" id="sizeGuideClose" aria-label="Close size guide">
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <line x1="18" y1="6" x2="6" y2="18"></line>
+        <line x1="6" y1="6" x2="18" y2="18"></line>
+      </svg>
+    </button>
+  </div>
+
+  <div class="size-guide-content">
+    <div class="size-guide-tabs">
+      <button class="size-tab active" data-tab="bras">Bras</button>
+      <button class="size-tab" data-tab="panties">Panties</button>
+      <button class="size-tab" data-tab="sleepwear">Sleepwear</button>
+      <button class="size-tab" data-tab="measurements">How to Measure</button>
+    </div>
+
+    <div class="size-guide-body">
+      <!-- Bras Size Chart -->
+      <div class="size-tab-content active" id="bras">
+        <div class="size-chart-description">
+          <p>Find your perfect bra size using our comprehensive sizing chart. For best results, measure while wearing an unpadded bra.</p>
+        </div>
+
+        <div class="size-chart-table-wrapper">
+          <table class="size-chart-table">
+            <thead>
+              <tr>
+                <th>Band Size</th>
+                <th>Underbust (cm)</th>
+                <th>Cup A</th>
+                <th>Cup B</th>
+                <th>Cup C</th>
+                <th>Cup D</th>
+                <th>Cup DD</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>30</td>
+                <td>63-67</td>
+                <td>73-77</td>
+                <td>77-81</td>
+                <td>81-85</td>
+                <td>85-89</td>
+                <td>89-93</td>
+              </tr>
+              <tr>
+                <td>32</td>
+                <td>68-72</td>
+                <td>78-82</td>
+                <td>82-86</td>
+                <td>86-90</td>
+                <td>90-94</td>
+                <td>94-98</td>
+              </tr>
+              <tr>
+                <td>34</td>
+                <td>73-77</td>
+                <td>83-87</td>
+                <td>87-91</td>
+                <td>91-95</td>
+                <td>95-99</td>
+                <td>99-103</td>
+              </tr>
+              <tr>
+                <td>36</td>
+                <td>78-82</td>
+                <td>88-92</td>
+                <td>92-96</td>
+                <td>96-100</td>
+                <td>100-104</td>
+                <td>104-108</td>
+              </tr>
+              <tr>
+                <td>38</td>
+                <td>83-87</td>
+                <td>93-97</td>
+                <td>97-101</td>
+                <td>101-105</td>
+                <td>105-109</td>
+                <td>109-113</td>
+              </tr>
+              <tr>
+                <td>40</td>
+                <td>88-92</td>
+                <td>98-102</td>
+                <td>102-106</td>
+                <td>106-110</td>
+                <td>110-114</td>
+                <td>114-118</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <div class="size-tips">
+          <h4>Quick Tips:</h4>
+          <ul>
+            <li>The band should be snug but not tight - you should be able to fit two fingers under it</li>
+            <li>The center gore (between cups) should lay flat against your chest</li>
+            <li>Underwire should sit flat against your rib cage</li>
+            <li>Straps shouldn't dig in or slip off</li>
+          </ul>
+        </div>
+      </div>
+
+      <!-- Panties Size Chart -->
+      <div class="size-tab-content" id="panties">
+        <div class="size-chart-description">
+          <p>Our panties are designed for comfort and fit. Refer to the chart below to find your perfect size.</p>
+        </div>
+
+        <div class="size-chart-table-wrapper">
+          <table class="size-chart-table">
+            <thead>
+              <tr>
+                <th>Size</th>
+                <th>Waist (cm)</th>
+                <th>Hips (cm)</th>
+                <th>US Size</th>
+                <th>EU Size</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>XS</td>
+                <td>58-64</td>
+                <td>84-89</td>
+                <td>2</td>
+                <td>34</td>
+              </tr>
+              <tr>
+                <td>S</td>
+                <td>65-71</td>
+                <td>90-95</td>
+                <td>4</td>
+                <td>36</td>
+              </tr>
+              <tr>
+                <td>M</td>
+                <td>72-78</td>
+                <td>96-101</td>
+                <td>6</td>
+                <td>38</td>
+              </tr>
+              <tr>
+                <td>L</td>
+                <td>79-85</td>
+                <td>102-107</td>
+                <td>8</td>
+                <td>40</td>
+              </tr>
+              <tr>
+                <td>XL</td>
+                <td>86-92</td>
+                <td>108-113</td>
+                <td>10</td>
+                <td>42</td>
+              </tr>
+              <tr>
+                <td>XXL</td>
+                <td>93-99</td>
+                <td>114-119</td>
+                <td>12</td>
+                <td>44</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- Sleepwear Size Chart -->
+      <div class="size-tab-content" id="sleepwear">
+        <div class="size-chart-description">
+          <p>Our sleepwear is designed for a relaxed, comfortable fit. Size up for a looser fit.</p>
+        </div>
+
+        <div class="size-chart-table-wrapper">
+          <table class="size-chart-table">
+            <thead>
+              <tr>
+                <th>Size</th>
+                <th>Bust (cm)</th>
+                <th>Waist (cm)</th>
+                <th>Hips (cm)</th>
+                <th>Length (cm)</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>XS</td>
+                <td>78-82</td>
+                <td>60-64</td>
+                <td>84-88</td>
+                <td>80</td>
+              </tr>
+              <tr>
+                <td>S</td>
+                <td>83-87</td>
+                <td>65-69</td>
+                <td>89-93</td>
+                <td>82</td>
+              </tr>
+              <tr>
+                <td>M</td>
+                <td>88-92</td>
+                <td>70-74</td>
+                <td>94-98</td>
+                <td>84</td>
+              </tr>
+              <tr>
+                <td>L</td>
+                <td>93-97</td>
+                <td>75-79</td>
+                <td>99-103</td>
+                <td>86</td>
+              </tr>
+              <tr>
+                <td>XL</td>
+                <td>98-102</td>
+                <td>80-84</td>
+                <td>104-108</td>
+                <td>88</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- How to Measure -->
+      <div class="size-tab-content" id="measurements">
+        <div class="measurement-guide">
+          <h3>How to Measure Yourself</h3>
+
+          <div class="measurement-item">
+            <div class="measurement-icon">
+              <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                <circle cx="12" cy="8" r="5"></circle>
+                <path d="M3 21v-2a4 4 0 0 1 4-4h10a4 4 0 0 1 4 4v2"></path>
+              </svg>
+            </div>
+            <div class="measurement-details">
+              <h4>Band Size</h4>
+              <p>Measure around your ribcage, directly under your bust. The tape should be snug and level. If you get an odd number, round up to the next even number.</p>
+            </div>
+          </div>
+
+          <div class="measurement-item">
+            <div class="measurement-icon">
+              <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                <circle cx="12" cy="12" r="10"></circle>
+                <circle cx="12" cy="12" r="4"></circle>
+              </svg>
+            </div>
+            <div class="measurement-details">
+              <h4>Bust Size</h4>
+              <p>Measure around the fullest part of your bust, keeping the tape level and comfortable. Make sure the tape isn't too tight or too loose.</p>
+            </div>
+          </div>
+
+          <div class="measurement-item">
+            <div class="measurement-icon">
+              <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                <path d="M12 2v20M2 12h20"></path>
+              </svg>
+            </div>
+            <div class="measurement-details">
+              <h4>Waist</h4>
+              <p>Measure around your natural waistline, which is typically the narrowest part of your torso, above your belly button.</p>
+            </div>
+          </div>
+
+          <div class="measurement-item">
+            <div class="measurement-icon">
+              <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                <path d="M12 2C8 2 4 6 4 6v4c0 4 4 6 8 6s8-2 8-6V6c0 0-4-4-8-4z"></path>
+              </svg>
+            </div>
+            <div class="measurement-details">
+              <h4>Hips</h4>
+              <p>Measure around the fullest part of your hips, keeping the tape level and your feet together. This is usually about 20cm below your waist.</p>
+            </div>
+          </div>
+
+          <div class="size-help-cta">
+            <p>Still unsure about your size?</p>
+            <a href="/pages/contact" class="btn btn-secondary">Contact Our Fit Experts</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  class SizeGuideModal {
+    constructor() {
+      this.modal = document.getElementById('sizeGuideModal');
+      this.overlay = document.getElementById('sizeGuideOverlay');
+      this.closeBtn = document.getElementById('sizeGuideClose');
+      this.tabs = document.querySelectorAll('.size-tab');
+      this.tabContents = document.querySelectorAll('.size-tab-content');
+
+      this.init();
+    }
+
+    init() {
+      // Setup triggers
+      this.setupTriggers();
+
+      // Close functionality
+      this.closeBtn.addEventListener('click', () => this.close());
+      this.overlay.addEventListener('click', () => this.close());
+      document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape' && this.modal.classList.contains('size-guide-modal--open')) {
+          this.close();
+        }
+      });
+
+      // Tab functionality
+      this.setupTabs();
+    }
+
+    setupTriggers() {
+      document.addEventListener('click', (e) => {
+        const trigger = e.target.closest('[data-size-guide-trigger]');
+        if (trigger) {
+          e.preventDefault();
+          this.open();
+        }
+      });
+    }
+
+    setupTabs() {
+      this.tabs.forEach(tab => {
+        tab.addEventListener('click', () => {
+          const targetTab = tab.dataset.tab;
+
+          // Remove active class from all tabs
+          this.tabs.forEach(t => t.classList.remove('active'));
+          this.tabContents.forEach(c => c.classList.remove('active'));
+
+          // Add active class to clicked tab
+          tab.classList.add('active');
+          document.getElementById(targetTab).classList.add('active');
+        });
+      });
+    }
+
+    open() {
+      this.modal.classList.add('size-guide-modal--open');
+      this.overlay.classList.add('size-guide-overlay--active');
+      document.body.style.overflow = 'hidden';
+    }
+
+    close() {
+      this.modal.classList.remove('size-guide-modal--open');
+      this.overlay.classList.remove('size-guide-overlay--active');
+      document.body.style.overflow = '';
+    }
+  }
+
+  // Initialize size guide
+  document.addEventListener('DOMContentLoaded', () => {
+    new SizeGuideModal();
+  });
+</script>
+
+<style>
+  .size-guide-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.6);
+    z-index: 9998;
+    opacity: 0;
+    visibility: hidden;
+    transition: all 0.3s ease;
+  }
+
+  .size-guide-overlay--active {
+    opacity: 1;
+    visibility: visible;
+  }
+
+  .size-guide-modal {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%) scale(0.9);
+    width: 90%;
+    max-width: 900px;
+    max-height: 90vh;
+    background: var(--color-white);
+    border-radius: 16px;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.2);
+    z-index: 9999;
+    opacity: 0;
+    visibility: hidden;
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    overflow: hidden;
+  }
+
+  .size-guide-modal--open {
+    opacity: 1;
+    visibility: visible;
+    transform: translate(-50%, -50%) scale(1);
+  }
+
+  .size-guide-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 2rem;
+    background: var(--color-cream);
+    border-bottom: 1px solid var(--color-blush-light);
+  }
+
+  .size-guide-title {
+    font-family: var(--font-heading);
+    font-size: 2rem;
+    font-weight: 400;
+    margin: 0;
+    color: var(--color-text);
+  }
+
+  .size-guide-close {
+    width: 44px;
+    height: 44px;
+    background: var(--color-white);
+    border: none;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.3s ease;
+  }
+
+  .size-guide-close:hover {
+    background: var(--color-champagne);
+    transform: rotate(90deg);
+  }
+
+  .size-guide-close:hover svg {
+    stroke: var(--color-white);
+  }
+
+  .size-guide-content {
+    max-height: calc(90vh - 100px);
+    overflow-y: auto;
+  }
+
+  .size-guide-tabs {
+    display: flex;
+    gap: 0.5rem;
+    padding: 1.5rem 2rem 0;
+    border-bottom: 1px solid var(--color-blush-light);
+    overflow-x: auto;
+  }
+
+  .size-tab {
+    padding: 0.75rem 1.5rem;
+    background: none;
+    border: none;
+    border-bottom: 2px solid transparent;
+    font-family: var(--font-body);
+    font-size: 0.9rem;
+    font-weight: 500;
+    color: var(--color-text-light);
+    cursor: pointer;
+    transition: all 0.3s ease;
+    white-space: nowrap;
+  }
+
+  .size-tab:hover {
+    color: var(--color-champagne);
+  }
+
+  .size-tab.active {
+    color: var(--color-champagne);
+    border-bottom-color: var(--color-champagne);
+  }
+
+  .size-guide-body {
+    padding: 2rem;
+  }
+
+  .size-tab-content {
+    display: none;
+  }
+
+  .size-tab-content.active {
+    display: block;
+    animation: fadeIn 0.3s ease;
+  }
+
+  @keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+  }
+
+  .size-chart-description {
+    margin-bottom: 2rem;
+  }
+
+  .size-chart-description p {
+    font-size: 1rem;
+    color: var(--color-text-light);
+    line-height: 1.6;
+    margin: 0;
+  }
+
+  .size-chart-table-wrapper {
+    overflow-x: auto;
+    margin-bottom: 2rem;
+  }
+
+  .size-chart-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.9rem;
+  }
+
+  .size-chart-table th {
+    background: var(--color-cream);
+    color: var(--color-text);
+    font-weight: 600;
+    padding: 1rem;
+    text-align: left;
+    border-bottom: 2px solid var(--color-blush);
+  }
+
+  .size-chart-table td {
+    padding: 1rem;
+    border-bottom: 1px solid var(--color-blush-light);
+    color: var(--color-text);
+  }
+
+  .size-chart-table tr:hover {
+    background: var(--color-cream-dark);
+  }
+
+  .size-tips {
+    background: var(--color-cream);
+    padding: 1.5rem;
+    border-radius: 8px;
+  }
+
+  .size-tips h4 {
+    font-family: var(--font-heading);
+    font-size: 1.2rem;
+    margin: 0 0 1rem 0;
+    color: var(--color-text);
+  }
+
+  .size-tips ul {
+    margin: 0;
+    padding-left: 1.5rem;
+  }
+
+  .size-tips li {
+    color: var(--color-text-light);
+    margin-bottom: 0.75rem;
+    line-height: 1.5;
+  }
+
+  .measurement-guide {
+    max-width: 600px;
+    margin: 0 auto;
+  }
+
+  .measurement-guide h3 {
+    font-family: var(--font-heading);
+    font-size: 1.8rem;
+    text-align: center;
+    margin: 0 0 2rem 0;
+    color: var(--color-text);
+  }
+
+  .measurement-item {
+    display: flex;
+    gap: 1.5rem;
+    margin-bottom: 2rem;
+    padding: 1.5rem;
+    background: var(--color-cream);
+    border-radius: 12px;
+  }
+
+  .measurement-icon {
+    flex-shrink: 0;
+    width: 60px;
+    height: 60px;
+    background: var(--color-white);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--color-champagne);
+  }
+
+  .measurement-details h4 {
+    font-family: var(--font-heading);
+    font-size: 1.2rem;
+    margin: 0 0 0.5rem 0;
+    color: var(--color-text);
+  }
+
+  .measurement-details p {
+    color: var(--color-text-light);
+    line-height: 1.6;
+    margin: 0;
+  }
+
+  .size-help-cta {
+    text-align: center;
+    margin-top: 3rem;
+    padding-top: 2rem;
+    border-top: 1px solid var(--color-blush-light);
+  }
+
+  .size-help-cta p {
+    font-size: 1.1rem;
+    color: var(--color-text);
+    margin: 0 0 1rem 0;
+  }
+
+  @media (max-width: 768px) {
+    .size-guide-modal {
+      width: 95%;
+      max-height: 95vh;
+    }
+
+    .size-guide-header {
+      padding: 1.5rem;
+    }
+
+    .size-guide-title {
+      font-size: 1.5rem;
+    }
+
+    .size-guide-tabs {
+      padding: 1rem;
+    }
+
+    .size-guide-body {
+      padding: 1rem;
+    }
+
+    .size-chart-table-wrapper {
+      font-size: 0.8rem;
+    }
+
+    .size-chart-table th,
+    .size-chart-table td {
+      padding: 0.75rem 0.5rem;
+    }
+
+    .measurement-item {
+      flex-direction: column;
+      text-align: center;
+      padding: 1rem;
+    }
+
+    .measurement-icon {
+      margin: 0 auto;
+    }
+  }
+</style>
