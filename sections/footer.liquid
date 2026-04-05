@@ -1,0 +1,378 @@
+{% schema %}
+{
+  "name": "Footer",
+  "tag": "footer",
+  "class": "site-footer",
+  "settings": [
+    {
+      "type": "image_picker",
+      "id": "footer_logo",
+      "label": "Footer logo"
+    },
+    {
+      "type": "richtext",
+      "id": "footer_about",
+      "label": "About text",
+      "default": "<p>La Camille - Egyptian luxury lingerie and pajamas, handcrafted with precision and elegance.</p>"
+    },
+    {
+      "type": "link_list",
+      "id": "footer_menu_1",
+      "label": "Footer menu 1",
+      "default": "footer"
+    },
+    {
+      "type": "link_list",
+      "id": "footer_menu_2",
+      "label": "Footer menu 2",
+      "default": "main-menu"
+    }
+  ],
+  "blocks": [
+    {
+      "type": "social",
+      "name": "Social Links",
+      "limit": 1,
+      "settings": [
+        {
+          "type": "url",
+          "id": "instagram_url",
+          "label": "Instagram URL"
+        },
+        {
+          "type": "url",
+          "id": "facebook_url",
+          "label": "Facebook URL"
+        },
+        {
+          "type": "url",
+          "id": "tiktok_url",
+          "label": "TikTok URL"
+        }
+      ]
+    },
+    {
+      "type": "newsletter",
+      "name": "Newsletter",
+      "limit": 1,
+      "settings": [
+        {
+          "type": "text",
+          "id": "newsletter_title",
+          "label": "Newsletter title",
+          "default": "Stay Updated"
+        },
+        {
+          "type": "textarea",
+          "id": "newsletter_text",
+          "label": "Newsletter text",
+          "default": "Subscribe for exclusive offers and new arrivals."
+        }
+      ]
+    }
+  ],
+  "default": {
+    "blocks": [
+      {
+        "type": "social"
+      },
+      {
+        "type": "newsletter"
+      }
+    ]
+  }
+}
+{% endschema %}
+
+{% style %}
+  .site-footer {
+    background: var(--color-text);
+    color: var(--color-white);
+    padding: 4rem 2rem 2rem;
+  }
+
+  .footer-container {
+    max-width: 1400px;
+    margin: 0 auto;
+    display: grid;
+    grid-template-columns: 2fr 1fr 1fr 1fr;
+    gap: 3rem;
+    margin-bottom: 3rem;
+  }
+
+  .footer-about {
+    padding-right: 2rem;
+  }
+
+  .footer-logo {
+    font-family: var(--font-heading);
+    font-size: 1.5rem;
+    font-weight: 300;
+    letter-spacing: 0.2em;
+    color: var(--color-white);
+    margin-bottom: 1rem;
+    text-decoration: none;
+    display: inline-block;
+  }
+
+  .footer-about p {
+    font-size: 0.95rem;
+    line-height: 1.8;
+    opacity: 0.8;
+    margin-bottom: 1.5rem;
+  }
+
+  .footer-heading {
+    font-family: var(--font-heading);
+    font-size: 1.1rem;
+    font-weight: 400;
+    color: var(--color-white);
+    margin-bottom: 1.5rem;
+    letter-spacing: 0.1em;
+  }
+
+  .footer-links {
+    list-style: none;
+  }
+
+  .footer-links li {
+    margin-bottom: 0.75rem;
+  }
+
+  .footer-links a {
+    color: var(--color-white);
+    text-decoration: none;
+    opacity: 0.8;
+    font-size: 0.9rem;
+    transition: opacity 0.3s ease;
+  }
+
+  .footer-links a:hover {
+    opacity: 1;
+    color: var(--color-champagne);
+  }
+
+  .social-links {
+    display: flex;
+    gap: 1rem;
+    margin-top: 1rem;
+  }
+
+  .social-link {
+    width: 40px;
+    height: 40px;
+    border: 1px solid rgba(255,255,255,0.3);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.3s ease;
+  }
+
+  .social-link:hover {
+    background: var(--color-champagne);
+    border-color: var(--color-champagne);
+    transform: translateY(-3px);
+  }
+
+  .social-link svg {
+    stroke: var(--color-white);
+    width: 18px;
+    height: 18px;
+  }
+
+  .newsletter-form {
+    display: flex;
+    gap: 0.5rem;
+  }
+
+  .newsletter-input {
+    flex: 1;
+    padding: 0.75rem 1rem;
+    background: rgba(255,255,255,0.1);
+    border: 1px solid rgba(255,255,255,0.2);
+    color: var(--color-white);
+    font-size: 0.9rem;
+  }
+
+  .newsletter-input::placeholder {
+    color: rgba(255,255,255,0.6);
+  }
+
+  .newsletter-input:focus {
+    outline: none;
+    border-color: var(--color-champagne);
+  }
+
+  .newsletter-button {
+    padding: 0.75rem 1.5rem;
+    background: var(--color-champagne);
+    color: var(--color-white);
+    border: none;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    font-size: 0.75rem;
+    cursor: pointer;
+    transition: background 0.3s ease;
+  }
+
+  .newsletter-button:hover {
+    background: var(--color-blush);
+  }
+
+  .footer-bottom {
+    max-width: 1400px;
+    margin: 0 auto;
+    padding-top: 2rem;
+    border-top: 1px solid rgba(255,255,255,0.1);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 0.85rem;
+    opacity: 0.7;
+  }
+
+  .payment-methods {
+    display: flex;
+    gap: 1rem;
+    align-items: center;
+  }
+
+  @media (max-width: 968px) {
+    .footer-container {
+      grid-template-columns: 1fr 1fr;
+      gap: 2rem;
+    }
+  }
+
+  @media (max-width: 640px) {
+    .footer-container {
+      grid-template-columns: 1fr;
+    }
+
+    .footer-bottom {
+      flex-direction: column;
+      gap: 1rem;
+      text-align: center;
+    }
+  }
+{% endstyle %}
+
+<footer class="site-footer">
+  <div class="footer-container">
+    <!-- About Column -->
+    <div class="footer-about">
+      {% if section.settings.footer_logo %}
+        <a href="/" class="footer-logo">
+          {{ section.settings.footer_logo | image_url: width: 200 | image_tag }}
+        </a>
+      {% else %}
+        <a href="/" class="footer-logo">LA CAMILLE</a>
+      {% endif %}
+
+      {% if section.settings.footer_about %}
+        <div class="footer-about-text">
+          {{ section.settings.footer_about }}
+        </div>
+      {% endif %}
+
+      {% for block in section.blocks %}
+        {% if block.type == 'social' %}
+          <div class="social-links" {{ block.shopify_attributes }}>
+            {% if block.settings.instagram_url %}
+              <a href="{{ block.settings.instagram_url }}" class="social-link" aria-label="Instagram">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <rect x="2" y="2" width="20" height="20" rx="5" ry="5"></rect>
+                  <path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"></path>
+                  <line x1="17.5" y1="6.5" x2="17.51" y2="6.5"></line>
+                </svg>
+              </a>
+            {% endif %}
+
+            {% if block.settings.facebook_url %}
+              <a href="{{ block.settings.facebook_url }}" class="social-link" aria-label="Facebook">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"></path>
+                </svg>
+              </a>
+            {% endif %}
+
+            {% if block.settings.tiktok_url %}
+              <a href="{{ block.settings.tiktok_url }}" class="social-link" aria-label="TikTok">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M9 12a4 4 0 1 0 4 4V4a5 5 0 0 0 5 5"></path>
+                </svg>
+              </a>
+            {% endif %}
+          </div>
+        {% endif %}
+      {% endfor %}
+    </div>
+
+    <!-- Footer Menu 1 -->
+    <div class="footer-column">
+      {% if linklists[section.settings.footer_menu_1].links.size > 0 %}
+        <h3 class="footer-heading">{{ linklists[section.settings.footer_menu_1].title }}</h3>
+        <ul class="footer-links">
+          {% for link in linklists[section.settings.footer_menu_1].links %}
+            <li>
+              <a href="{{ link.url }}">{{ link.title }}</a>
+            </li>
+          {% endfor %}
+        </ul>
+      {% endif %}
+    </div>
+
+    <!-- Footer Menu 2 -->
+    <div class="footer-column">
+      {% if linklists[section.settings.footer_menu_2].links.size > 0 %}
+        <h3 class="footer-heading">{{ linklists[section.settings.footer_menu_2].title }}</h3>
+        <ul class="footer-links">
+          {% for link in linklists[section.settings.footer_menu_2].links limit: 5 %}
+            <li>
+              <a href="{{ link.url }}">{{ link.title }}</a>
+            </li>
+          {% endfor %}
+        </ul>
+      {% endif %}
+    </div>
+
+    <!-- Newsletter -->
+    <div class="footer-column">
+      {% for block in section.blocks %}
+        {% if block.type == 'newsletter' %}
+          <div class="footer-newsletter" {{ block.shopify_attributes }}>
+            {% if block.settings.newsletter_title != blank %}
+              <h3 class="footer-heading">{{ block.settings.newsletter_title }}</h3>
+            {% endif %}
+
+            {% if block.settings.newsletter_text != blank %}
+              <p style="margin-bottom: 1rem; opacity: 0.8; font-size: 0.9rem;">
+                {{ block.settings.newsletter_text }}
+              </p>
+            {% endif %}
+
+            <form action="/contact#contact_form" method="post" class="newsletter-form">
+              <input type="email"
+                     name="contact[email]"
+                     class="newsletter-input"
+                     placeholder="Your email"
+                     required>
+              <button type="submit" class="newsletter-button">Subscribe</button>
+            </form>
+          </div>
+        {% endif %}
+      {% endfor %}
+    </div>
+  </div>
+
+  <!-- Footer Bottom -->
+  <div class="footer-bottom">
+    <p>&copy; {{ 'now' | date: '%Y' }} La Camille. All rights reserved.</p>
+    <div class="payment-methods">
+      <span>Payment methods:</span>
+      <span>💳 Cash on Delivery</span>
+      <span>💳 PayMob</span>
+    </div>
+  </div>
+</footer>
