@@ -1,0 +1,213 @@
+{% schema %}
+{
+  "name": "Collection Banner",
+  "tag": "section",
+  "class": "collection-banner-section",
+  "settings": [
+    {
+      "type": "checkbox",
+      "id": "show_collection_image",
+      "label": "Show collection image",
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "show_collection_title",
+      "label": "Show collection title",
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "show_collection_description",
+      "label": "Show collection description",
+      "default": true
+    },
+    {
+      "type": "select",
+      "id": "banner_height",
+      "label": "Banner height",
+      "options": [
+        {
+          "value": "small",
+          "label": "Small (40vh)"
+        },
+        {
+          "value": "medium",
+          "label": "Medium (60vh)"
+        },
+        {
+          "value": "large",
+          "label": "Large (80vh)"
+        }
+      ],
+      "default": "medium"
+    }
+  ],
+  "presets": [
+    {
+      "name": "Collection Banner"
+    }
+  ]
+}
+{% endschema %}
+
+{% style %}
+  .collection-banner-section {
+    position: relative;
+    background: var(--color-blush-light);
+    overflow: hidden;
+  }
+
+  .banner-height-small {
+    height: 40vh;
+    min-height: 300px;
+  }
+
+  .banner-height-medium {
+    height: 60vh;
+    min-height: 400px;
+  }
+
+  .banner-height-large {
+    height: 80vh;
+    min-height: 500px;
+  }
+
+  .collection-banner-bg {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-size: cover;
+    background-position: center;
+    opacity: 0.3;
+  }
+
+  .collection-banner-content {
+    position: relative;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    padding: 2rem;
+    z-index: 2;
+  }
+
+  .collection-title {
+    font-family: var(--font-heading);
+    font-size: clamp(2.5rem, 6vw, 5rem);
+    font-weight: 300;
+    color: var(--color-text);
+    margin-bottom: 1.5rem;
+    animation: fadeInUp 1s ease-out;
+  }
+
+  .collection-description {
+    font-size: 1.2rem;
+    color: var(--color-text-light);
+    max-width: 600px;
+    line-height: 1.8;
+    animation: fadeInUp 1s ease-out 0.2s backwards;
+  }
+
+  .collection-breadcrumb {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    padding: 1rem 2rem;
+    background: rgba(253, 248, 243, 0.95);
+    z-index: 10;
+  }
+
+  .breadcrumb-list {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    list-style: none;
+    font-size: 0.85rem;
+  }
+
+  .breadcrumb-list a {
+    color: var(--color-text-light);
+    text-decoration: none;
+    transition: color 0.3s ease;
+  }
+
+  .breadcrumb-list a:hover {
+    color: var(--color-champagne);
+  }
+
+  .breadcrumb-separator {
+    color: var(--color-champagne);
+  }
+
+  @keyframes fadeInUp {
+    from {
+      opacity: 0;
+      transform: translateY(30px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  @media (max-width: 768px) {
+    .banner-height-small {
+      height: 30vh;
+      min-height: 200px;
+    }
+
+    .banner-height-medium {
+      height: 40vh;
+      min-height: 300px;
+    }
+
+    .banner-height-large {
+      height: 50vh;
+      min-height: 350px;
+    }
+
+    .collection-banner-content {
+      padding: 1rem;
+    }
+  }
+{% endstyle %}
+
+{% if collection %}
+  <section class="collection-banner-section banner-height-{{ section.settings.banner_height }}">
+    {% if section.settings.show_collection_image and collection.image %}
+      <div class="collection-banner-bg"
+           style="background-image: url('{{ collection.image | image_url: width: 1920 }}');">
+      </div>
+    {% elsif section.settings.show_collection_image and collection.products.first.featured_image %}
+      <div class="collection-banner-bg"
+           style="background-image: url('{{ collection.products.first.featured_image | image_url: width: 1920 }}');">
+      </div>
+    {% endif %}
+
+    <nav class="collection-breadcrumb">
+      <ul class="breadcrumb-list">
+        <li><a href="/">Home</a></li>
+        <li class="breadcrumb-separator">/</li>
+        <li>{{ collection.title }}</li>
+      </ul>
+    </nav>
+
+    <div class="collection-banner-content">
+      {% if section.settings.show_collection_title %}
+        <h1 class="collection-title">{{ collection.title }}</h1>
+      {% endif %}
+
+      {% if section.settings.show_collection_description and collection.description != blank %}
+        <div class="collection-description">
+          {{ collection.description }}
+        </div>
+      {% endif %}
+    </div>
+  </section>
+{% endif %}
