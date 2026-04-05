@@ -1,0 +1,584 @@
+{% comment %}
+  La Camille - Premium Quick View Modal
+  Fast product preview without leaving the page
+{% endcomment %}
+
+<div class="quick-view-overlay" id="quickViewOverlay"></div>
+
+<div class="quick-view-modal" id="quickViewModal">
+  <button class="quick-view__close" id="quickViewClose" aria-label="Close quick view">
+    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+      <line x1="18" y1="6" x2="6" y2="18"></line>
+      <line x1="6" y1="6" x2="18" y2="18"></line>
+    </svg>
+  </button>
+
+  <div class="quick-view__content">
+    <div class="quick-view__loading" id="quickViewLoading">
+      <div class="loading-spinner"></div>
+    </div>
+
+    <div class="quick-view__body" id="quickViewBody">
+      <!-- Content will be loaded here via AJAX -->
+    </div>
+  </div>
+</div>
+
+<script>
+  class QuickViewModal {
+    constructor() {
+      this.modal = document.getElementById('quickViewModal');
+      this.overlay = document.getElementById('quickViewOverlay');
+      this.closeBtn = document.getElementById('quickViewClose');
+      this.body = document.getElementById('quickViewBody');
+      this.loading = document.getElementById('quickViewLoading');
+      this.currentProductId = null;
+
+      this.init();
+    }
+
+    init() {
+      // Close button
+      this.closeBtn.addEventListener('click', () => this.close());
+
+      // Overlay click
+      this.overlay.addEventListener('click', () => this.close());
+
+      // ESC key
+      document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape') {
+          this.close();
+        }
+      });
+
+      // Setup quick view buttons
+      this.setupQuickViewButtons();
+    }
+
+    setupQuickViewButtons() {
+      document.addEventListener('click', (e) => {
+        const quickViewBtn = e.target.closest('[data-quick-view]');
+        if (quickViewBtn) {
+          e.preventDefault();
+          const productHandle = quickViewBtn.dataset.productHandle;
+          this.open(productHandle);
+        }
+      });
+    }
+
+    async open(productHandle) {
+      this.modal.classList.add('quick-view-modal--open');
+      this.overlay.classList.add('quick-view-overlay--active');
+      document.body.style.overflow = 'hidden';
+
+      this.loading.style.display = 'flex';
+      this.body.innerHTML = '';
+
+      try {
+        const response = await fetch(`/products/${productHandle}?view=quick-view`);
+        const html = await response.text();
+
+        const parser = new DOMParser();
+        const doc = parser.parseFromString(html, 'text/html');
+        const quickViewContent = doc.querySelector('#quickViewContent');
+
+        if (quickViewContent) {
+          this.body.innerHTML = quickViewContent.innerHTML;
+          this.initProductGallery();
+          this.initVariants();
+          this.initAddToCart();
+        }
+
+        this.loading.style.display = 'none';
+      } catch (error) {
+        console.error('Error loading quick view:', error);
+        this.loading.style.display = 'none';
+        this.body.innerHTML = '<p class="error-message">Unable to load product details. Please try again.</p>';
+      }
+    }
+
+    close() {
+      this.modal.classList.remove('quick-view-modal--open');
+      this.overlay.classList.remove('quick-view-overlay--active');
+      document.body.style.overflow = '';
+      this.body.innerHTML = '';
+    }
+
+    initProductGallery() {
+      const mainImage = document.querySelector('.quick-view__main-image');
+      const thumbnails = document.querySelectorAll('.quick-view__thumbnail');
+
+      if (thumbnails.length > 0) {
+        thumbnails.forEach(thumb => {
+          thumb.addEventListener('click', () => {
+            const newSrc = thumb.dataset.imageSrc;
+            mainImage.src = newSrc;
+
+            thumbnails.forEach(t => t.classList.remove('active'));
+            thumb.classList.add('active');
+          });
+        });
+      }
+
+      // Image zoom on hover
+      if (mainImage) {
+        mainImage.addEventListener('mousemove', (e) => {
+          const rect = mainImage.getBoundingClientRect();
+          const x = ((e.clientX - rect.left) / rect.width) * 100;
+          const y = ((e.clientY - rect.top) / rect.height) * 100;
+          mainImage.style.transformOrigin = `${x}% ${y}%`;
+        });
+
+        mainImage.addEventListener('mouseenter', () => {
+          mainImage.style.transform = 'scale(1.5)';
+        });
+
+        mainImage.addEventListener('mouseleave', () => {
+          mainImage.style.transform = 'scale(1)';
+        });
+      }
+    }
+
+    initVariants() {
+      const variantSelects = document.querySelectorAll('.quick-view__variant-select');
+      const addToCartBtn = document.querySelector('.quick-view__add-to-cart');
+      const priceDisplay = document.querySelector('.quick-view__price');
+      const comparePriceDisplay = document.querySelector('.quick-view__compare-price');
+
+      variantSelects.forEach(select => {
+        select.addEventListener('change', () => {
+          this.updateVariant();
+        });
+      });
+    }
+
+    updateVariant() {
+      const variantSelects = document.querySelectorAll('.quick-view__variant-select');
+      const selectedOptions = Array.from(variantSelects).map(select => select.value);
+      const variantData = JSON.parse(document.querySelector('[data-variants]').textContent);
+
+      const matchedVariant = variantData.find(variant =>
+        variant.options.every((option, index) => option === selectedOptions[index])
+      );
+
+      if (matchedVariant) {
+        const addToCartBtn = document.querySelector('.quick-view__add-to-cart');
+        const priceDisplay = document.querySelector('.quick-view__price');
+        const comparePriceDisplay = document.querySelector('.quick-view__compare-price');
+
+        if (priceDisplay) {
+          priceDisplay.textContent = this.formatMoney(matchedVariant.price);
+        }
+
+        if (comparePriceDisplay) {
+          if (matchedVariant.compare_at_price > matchedVariant.price) {
+            comparePriceDisplay.textContent = this.formatMoney(matchedVariant.compare_at_price);
+            comparePriceDisplay.style.display = 'inline';
+          } else {
+            comparePriceDisplay.style.display = 'none';
+          }
+        }
+
+        if (addToCartBtn) {
+          if (matchedVariant.available) {
+            addToCartBtn.disabled = false;
+            addToCartBtn.textContent = 'Add to Bag';
+            addToCartBtn.dataset.variantId = matchedVariant.id;
+          } else {
+            addToCartBtn.disabled = true;
+            addToCartBtn.textContent = 'Sold Out';
+          }
+        }
+
+        // Update main image if variant has image
+        if (matchedVariant.featured_image) {
+          const mainImage = document.querySelector('.quick-view__main-image');
+          if (mainImage) {
+            mainImage.src = matchedVariant.featured_image.src;
+          }
+        }
+      }
+    }
+
+    initAddToCart() {
+      const addToCartBtn = document.querySelector('.quick-view__add-to-cart');
+
+      if (addToCartBtn) {
+        addToCartBtn.addEventListener('click', async (e) => {
+          e.preventDefault();
+
+          const variantId = addToCartBtn.dataset.variantId;
+          const quantity = 1;
+
+          if (!variantId) {
+            alert('Please select a variant');
+            return;
+          }
+
+          addToCartBtn.textContent = 'Adding...';
+          addToCartBtn.disabled = true;
+
+          try {
+            const response = await fetch('/cart/add.js', {
+              method: 'POST',
+              headers: {
+                'Content-Type': 'application/json',
+              },
+              body: JSON.stringify({
+                items: [{
+                  id: variantId,
+                  quantity: quantity
+                }]
+              })
+            });
+
+            if (response.ok) {
+              addToCartBtn.textContent = 'Added!';
+              addToCartBtn.classList.add('success');
+
+              // Open cart drawer
+              setTimeout(() => {
+                this.close();
+                const cartDrawer = document.querySelector('[data-cart-trigger]');
+                if (cartDrawer) {
+                  cartDrawer.click();
+                }
+              }, 1000);
+            }
+          } catch (error) {
+            console.error('Error adding to cart:', error);
+            addToCartBtn.textContent = 'Error - Try Again';
+            addToCartBtn.disabled = false;
+          }
+        });
+      }
+    }
+
+    formatMoney(cents) {
+      return '$' + (cents / 100).toFixed(2);
+    }
+  }
+
+  // Initialize quick view
+  document.addEventListener('DOMContentLoaded', () => {
+    new QuickViewModal();
+  });
+</script>
+
+<style>
+  .quick-view-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.6);
+    z-index: 9998;
+    opacity: 0;
+    visibility: hidden;
+    transition: all 0.3s ease;
+  }
+
+  .quick-view-overlay--active {
+    opacity: 1;
+    visibility: visible;
+  }
+
+  .quick-view-modal {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%) scale(0.9);
+    width: 90%;
+    max-width: 1100px;
+    max-height: 90vh;
+    background: var(--color-white);
+    z-index: 9999;
+    border-radius: 12px;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.2);
+    opacity: 0;
+    visibility: hidden;
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    overflow: hidden;
+  }
+
+  .quick-view-modal--open {
+    opacity: 1;
+    visibility: visible;
+    transform: translate(-50%, -50%) scale(1);
+  }
+
+  .quick-view__close {
+    position: absolute;
+    top: 1rem;
+    right: 1rem;
+    width: 44px;
+    height: 44px;
+    background: var(--color-white);
+    border: none;
+    border-radius: 50%;
+    cursor: pointer;
+    z-index: 10;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    transition: all 0.3s ease;
+  }
+
+  .quick-view__close:hover {
+    background: var(--color-champagne);
+    transform: rotate(90deg);
+  }
+
+  .quick-view__close:hover svg {
+    stroke: var(--color-white);
+  }
+
+  .quick-view__content {
+    position: relative;
+    height: 100%;
+    overflow-y: auto;
+  }
+
+  .quick-view__loading {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    background: var(--color-white);
+  }
+
+  .loading-spinner {
+    width: 50px;
+    height: 50px;
+    border: 3px solid var(--color-blush-light);
+    border-top-color: var(--color-champagne);
+    border-radius: 50%;
+    animation: spin 0.8s linear infinite;
+  }
+
+  @keyframes spin {
+    to { transform: rotate(360deg); }
+  }
+
+  .quick-view__body {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0;
+  }
+
+  .quick-view__gallery {
+    position: relative;
+    background: var(--color-cream);
+    padding: 2rem;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .quick-view__main-image {
+    max-width: 100%;
+    max-height: 500px;
+    object-fit: contain;
+    transition: transform 0.3s ease;
+    cursor: zoom-in;
+  }
+
+  .quick-view__thumbnails {
+    display: flex;
+    gap: 0.75rem;
+    margin-top: 1.5rem;
+    justify-content: center;
+  }
+
+  .quick-view__thumbnail {
+    width: 80px;
+    height: 80px;
+    object-fit: cover;
+    border-radius: 6px;
+    cursor: pointer;
+    border: 2px solid transparent;
+    transition: all 0.3s ease;
+  }
+
+  .quick-view__thumbnail:hover,
+  .quick-view__thumbnail.active {
+    border-color: var(--color-champagne);
+    transform: scale(1.05);
+  }
+
+  .quick-view__details {
+    padding: 3rem;
+    display: flex;
+    flex-direction: column;
+    max-height: 90vh;
+    overflow-y: auto;
+  }
+
+  .quick-view__title {
+    font-family: var(--font-heading);
+    font-size: 2rem;
+    font-weight: 400;
+    color: var(--color-text);
+    margin: 0 0 1rem 0;
+    line-height: 1.2;
+  }
+
+  .quick-view__price-wrapper {
+    margin-bottom: 2rem;
+  }
+
+  .quick-view__price {
+    font-size: 1.5rem;
+    font-weight: 600;
+    color: var(--color-champagne);
+  }
+
+  .quick-view__compare-price {
+    font-size: 1.2rem;
+    color: var(--color-text-light);
+    text-decoration: line-through;
+    margin-left: 0.75rem;
+  }
+
+  .quick-view__description {
+    color: var(--color-text-light);
+    line-height: 1.7;
+    margin-bottom: 2rem;
+    font-size: 0.95rem;
+  }
+
+  .quick-view__variants {
+    margin-bottom: 2rem;
+  }
+
+  .quick-view__variant-label {
+    font-size: 0.85rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: var(--color-text);
+    margin-bottom: 0.75rem;
+    display: block;
+  }
+
+  .quick-view__variant-select {
+    width: 100%;
+    padding: 1rem;
+    border: 1px solid var(--color-blush);
+    border-radius: 6px;
+    font-family: var(--font-body);
+    font-size: 0.95rem;
+    color: var(--color-text);
+    background: var(--color-white);
+    cursor: pointer;
+    transition: border-color 0.3s ease;
+    margin-bottom: 1rem;
+  }
+
+  .quick-view__variant-select:focus {
+    outline: none;
+    border-color: var(--color-champagne);
+  }
+
+  .quick-view__actions {
+    margin-top: auto;
+  }
+
+  .quick-view__add-to-cart {
+    width: 100%;
+    padding: 1.25rem;
+    background: var(--color-champagne);
+    color: var(--color-white);
+    border: none;
+    border-radius: 6px;
+    font-size: 1rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.15em;
+    cursor: pointer;
+    transition: all 0.3s ease;
+  }
+
+  .quick-view__add-to-cart:hover:not(:disabled) {
+    background: var(--color-text);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  }
+
+  .quick-view__add-to-cart:disabled {
+    background: var(--color-blush);
+    cursor: not-allowed;
+  }
+
+  .quick-view__add-to-cart.success {
+    background: #27ae60;
+  }
+
+  .quick-view__view-full {
+    display: block;
+    width: 100%;
+    padding: 1rem;
+    text-align: center;
+    color: var(--color-text);
+    text-decoration: none;
+    font-size: 0.9rem;
+    margin-top: 1rem;
+    transition: color 0.3s ease;
+  }
+
+  .quick-view__view-full:hover {
+    color: var(--color-champagne);
+  }
+
+  .error-message {
+    text-align: center;
+    padding: 3rem;
+    color: var(--color-text-light);
+  }
+
+  /* Responsive */
+  @media (max-width: 968px) {
+    .quick-view__body {
+      grid-template-columns: 1fr;
+    }
+
+    .quick-view__gallery {
+      padding: 1.5rem;
+    }
+
+    .quick-view__main-image {
+      max-height: 400px;
+    }
+
+    .quick-view__details {
+      padding: 2rem 1.5rem;
+    }
+
+    .quick-view__title {
+      font-size: 1.5rem;
+    }
+  }
+
+  @media (max-width: 600px) {
+    .quick-view-modal {
+      width: 95%;
+      max-height: 95vh;
+    }
+
+    .quick-view__details {
+      padding: 1.5rem;
+    }
+
+    .quick-view__thumbnail {
+      width: 60px;
+      height: 60px;
+    }
+  }
+</style>

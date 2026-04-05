@@ -50,6 +50,265 @@
   .site-header {
     padding: 2rem 4rem;
   }
+
+  /* Desktop Only Elements */
+  @media (max-width: 968px) {
+    .desktop-only {
+      display: none !important;
+    }
+
+    .nav-links {
+      display: none !important;
+    }
+  }
+
+  /* Mobile Menu Toggle */
+  .mobile-menu-toggle {
+    display: none;
+  }
+
+  @media (max-width: 968px) {
+    .mobile-menu-toggle {
+      display: flex;
+    }
+  }
+
+  /* Mobile Menu Overlay */
+  .mobile-menu-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5);
+    z-index: 9998;
+    opacity: 0;
+    visibility: hidden;
+    transition: all 0.3s ease;
+  }
+
+  .mobile-menu-overlay.active {
+    opacity: 1;
+    visibility: visible;
+  }
+
+  /* Mobile Menu */
+  .mobile-menu {
+    position: fixed;
+    top: 0;
+    right: -400px;
+    width: 100%;
+    max-width: 400px;
+    height: 100%;
+    background: var(--color-white);
+    z-index: 9999;
+    transition: right 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    box-shadow: -5px 0 30px rgba(0, 0, 0, 0.1);
+    overflow-y: auto;
+  }
+
+  .mobile-menu.active {
+    right: 0;
+  }
+
+  .mobile-menu__close {
+    position: absolute;
+    top: 1.5rem;
+    right: 1.5rem;
+    width: 44px;
+    height: 44px;
+    background: var(--color-cream);
+    border: none;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.3s ease;
+  }
+
+  .mobile-menu__close:hover {
+    background: var(--color-champagne);
+    transform: rotate(90deg);
+  }
+
+  .mobile-menu__close:hover svg {
+    stroke: var(--color-white);
+  }
+
+  .mobile-menu__content {
+    padding: 6rem 2rem 2rem;
+    display: flex;
+    flex-direction: column;
+    min-height: 100%;
+  }
+
+  .mobile-menu__nav {
+    flex: 1;
+  }
+
+  .mobile-menu__list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+  }
+
+  .mobile-menu__item {
+    border-bottom: 1px solid var(--color-blush-light);
+    animation: slideInRight 0.3s ease forwards;
+    opacity: 0;
+  }
+
+  .mobile-menu__item:nth-child(1) { animation-delay: 0.1s; }
+  .mobile-menu__item:nth-child(2) { animation-delay: 0.2s; }
+  .mobile-menu__item:nth-child(3) { animation-delay: 0.3s; }
+  .mobile-menu__item:nth-child(4) { animation-delay: 0.4s; }
+  .mobile-menu__item:nth-child(5) { animation-delay: 0.5s; }
+
+  @keyframes slideInRight {
+    from {
+      opacity: 0;
+      transform: translateX(30px);
+    }
+    to {
+      opacity: 1;
+      transform: translateX(0);
+    }
+  }
+
+  .mobile-menu__link {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 1.5rem 0;
+    font-size: 1.2rem;
+    color: var(--color-text);
+    text-decoration: none;
+    font-weight: 500;
+    transition: color 0.3s ease;
+  }
+
+  .mobile-menu__link:hover {
+    color: var(--color-champagne);
+  }
+
+  .mobile-menu__link svg {
+    transition: transform 0.3s ease;
+  }
+
+  .mobile-menu__link:hover svg {
+    transform: translateX(5px);
+  }
+
+  .mobile-menu__footer {
+    padding-top: 2rem;
+    border-top: 1px solid var(--color-blush-light);
+  }
+
+  .mobile-menu__search {
+    margin-bottom: 2rem;
+  }
+
+  .mobile-search-form {
+    position: relative;
+    display: flex;
+    align-items: center;
+  }
+
+  .mobile-search-input {
+    width: 100%;
+    padding: 1rem 3rem 1rem 1rem;
+    border: 2px solid var(--color-blush-light);
+    border-radius: 8px;
+    font-family: var(--font-body);
+    font-size: 1rem;
+    color: var(--color-text);
+    transition: border-color 0.3s ease;
+  }
+
+  .mobile-search-input:focus {
+    outline: none;
+    border-color: var(--color-champagne);
+  }
+
+  .mobile-search-btn {
+    position: absolute;
+    right: 1rem;
+    background: none;
+    border: none;
+    cursor: pointer;
+    color: var(--color-text);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .mobile-search-btn:hover {
+    color: var(--color-champagne);
+  }
+
+  .mobile-menu__actions {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+  }
+
+  .mobile-menu__action-link {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    padding: 1rem;
+    background: var(--color-cream);
+    border-radius: 8px;
+    text-decoration: none;
+    color: var(--color-text);
+    font-weight: 500;
+    transition: all 0.3s ease;
+  }
+
+  .mobile-menu__action-link:hover {
+    background: var(--color-blush);
+    color: var(--color-champagne);
+  }
+
+  .mobile-wishlist-count {
+    margin-left: auto;
+    background: var(--color-champagne);
+    color: var(--color-white);
+    font-size: 0.75rem;
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 600;
+  }
+
+  @media (max-width: 968px) {
+    .site-header {
+      padding: 1rem 1.5rem;
+    }
+
+    .site-nav {
+      gap: 1rem;
+    }
+
+    .site-logo {
+      font-size: 1.4rem;
+    }
+  }
+
+  @media (max-width: 600px) {
+    .mobile-menu {
+      max-width: 100%;
+      right: -100%;
+    }
+
+    .mobile-menu__link {
+      font-size: 1.1rem;
+    }
+  }
 {% endstyle %}
 
 <header class="site-header">
@@ -77,13 +336,22 @@
     </ul>
 
     <div class="nav-icons">
-      <a href="/search" class="nav-icon" aria-label="Search">
+      <button class="nav-icon mobile-menu-toggle" id="mobileMenuToggle" aria-label="Toggle menu">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <line x1="3" y1="12" x2="21" y2="12"></line>
+          <line x1="3" y1="6" x2="21" y2="6"></line>
+          <line x1="3" y1="18" x2="21" y2="18"></line>
+        </svg>
+      </button>
+
+      <a href="/search" class="nav-icon desktop-only" aria-label="Search">
         <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
           <circle cx="11" cy="11" r="8"></circle>
           <path d="m21 21-4.35-4.35"></path>
         </svg>
       </a>
-      <a href="/cart" class="nav-icon" aria-label="Cart">
+
+      <button class="nav-icon nav-icon--cart" data-cart-trigger aria-label="Cart">
         <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
           <path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"></path>
           <line x1="3" y1="6" x2="21" y2="6"></line>
@@ -92,7 +360,145 @@
         {% if cart.item_count > 0 %}
           <span class="cart-count">{{ cart.item_count }}</span>
         {% endif %}
-      </a>
+      </button>
+    </div>
+
+    <!-- Mobile Menu -->
+    <div class="mobile-menu-overlay" id="mobileMenuOverlay"></div>
+    <div class="mobile-menu" id="mobileMenu">
+      <button class="mobile-menu__close" id="mobileMenuClose" aria-label="Close menu">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <line x1="18" y1="6" x2="6" y2="18"></line>
+          <line x1="6" y1="6" x2="18" y2="18"></line>
+        </svg>
+      </button>
+
+      <div class="mobile-menu__content">
+        <nav class="mobile-menu__nav">
+          <ul class="mobile-menu__list">
+            {% for link in linklists[section.settings.menu].links %}
+              <li class="mobile-menu__item">
+                <a href="{{ link.url }}" class="mobile-menu__link">
+                  {{ link.title }}
+                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <polyline points="9 18 15 12 9 6"></polyline>
+                  </svg>
+                </a>
+              </li>
+            {% endfor %}
+          </ul>
+        </nav>
+
+        <div class="mobile-menu__footer">
+          <div class="mobile-menu__search">
+            <form action="/search" method="get" class="mobile-search-form">
+              <input type="text" name="q" placeholder="Search products..." class="mobile-search-input">
+              <button type="submit" class="mobile-search-btn">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <circle cx="11" cy="11" r="8"></circle>
+                  <path d="m21 21-4.35-4.35"></path>
+                </svg>
+              </button>
+            </form>
+          </div>
+
+          <div class="mobile-menu__actions">
+            <a href="/account" class="mobile-menu__action-link">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+                <circle cx="12" cy="7" r="4"></circle>
+              </svg>
+              Account
+            </a>
+
+            <button class="mobile-menu__action-link" data-wishlist-trigger>
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path>
+              </svg>
+              Wishlist
+              <span class="mobile-wishlist-count">0</span>
+            </button>
+          </div>
+        </div>
+      </div>
     </div>
   </nav>
 </header>
+
+<script>
+  // Mobile Menu functionality
+  document.addEventListener('DOMContentLoaded', () => {
+    const mobileMenuToggle = document.getElementById('mobileMenuToggle');
+    const mobileMenuClose = document.getElementById('mobileMenuClose');
+    const mobileMenu = document.getElementById('mobileMenu');
+    const mobileMenuOverlay = document.getElementById('mobileMenuOverlay');
+
+    function openMobileMenu() {
+      mobileMenu.classList.add('active');
+      mobileMenuOverlay.classList.add('active');
+      document.body.style.overflow = 'hidden';
+    }
+
+    function closeMobileMenu() {
+      mobileMenu.classList.remove('active');
+      mobileMenuOverlay.classList.remove('active');
+      document.body.style.overflow = '';
+    }
+
+    mobileMenuToggle.addEventListener('click', openMobileMenu);
+    mobileMenuClose.addEventListener('click', closeMobileMenu);
+    mobileMenuOverlay.addEventListener('click', closeMobileMenu);
+
+    // Close menu on link click
+    const mobileMenuLinks = document.querySelectorAll('.mobile-menu__link');
+    mobileMenuLinks.forEach(link => {
+      link.addEventListener('click', () => {
+        closeMobileMenu();
+      });
+    });
+
+    // Close menu on ESC key
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape' && mobileMenu.classList.contains('active')) {
+        closeMobileMenu();
+      }
+    });
+
+    // Wishlist trigger in mobile menu
+    const wishlistTrigger = document.querySelector('[data-wishlist-trigger]');
+    if (wishlistTrigger) {
+      wishlistTrigger.addEventListener('click', () => {
+        closeMobileMenu();
+        setTimeout(() => {
+          window.location.href = '/pages/wishlist';
+        }, 300);
+      });
+    }
+
+    // Update wishlist count in mobile menu
+    function updateMobileWishlistCount() {
+      const countElements = document.querySelectorAll('.mobile-wishlist-count');
+      try {
+        const wishlist = JSON.parse(localStorage.getItem('lacamille_wishlist') || '[]');
+        countElements.forEach(el => {
+          el.textContent = wishlist.length;
+        });
+      } catch (error) {
+        console.error('Error updating wishlist count:', error);
+      }
+    }
+
+    // Update count on load
+    updateMobileWishlistCount();
+
+    // Update count when wishlist changes
+    window.addEventListener('storage', (e) => {
+      if (e.key === 'lacamille_wishlist') {
+        updateMobileWishlistCount();
+      }
+    });
+
+    // Listen for custom wishlist update events
+    document.addEventListener('wishlistUpdated', updateMobileWishlistCount);
+  });
+</script>

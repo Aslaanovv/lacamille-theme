@@ -1,0 +1,193 @@
+{% comment %}
+  La Camille - Scroll Progress Indicator
+  Shows reading progress at the top of the page
+{% endcomment %}
+
+<div class="scroll-progress-container" id="scrollProgress">
+  <div class="scroll-progress-bar" id="scrollProgressBar"></div>
+</div>
+
+<button class="back-to-top" id="backToTop" aria-label="Back to top">
+  <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+    <polyline points="18 15 12 9 6 15"></polyline>
+  </svg>
+</button>
+
+<script>
+  class ScrollProgress {
+    constructor() {
+      this.container = document.getElementById('scrollProgress');
+      this.progressBar = document.getElementById('scrollProgressBar');
+      this.backToTopBtn = document.getElementById('backToTop');
+      this.init();
+    }
+
+    init() {
+      if (!this.container || !this.progressBar) return;
+
+      let ticking = false;
+
+      window.addEventListener('scroll', () => {
+        if (!ticking) {
+          window.requestAnimationFrame(() => {
+            this.updateProgress();
+            this.updateBackToTopButton();
+            ticking = false;
+          });
+
+          ticking = true;
+        }
+      });
+
+      // Back to top button click
+      if (this.backToTopBtn) {
+        this.backToTopBtn.addEventListener('click', () => {
+          window.scrollTo({
+            top: 0,
+            behavior: 'smooth'
+          });
+        });
+      }
+
+      // Initial update
+      this.updateProgress();
+      this.updateBackToTopButton();
+    }
+
+    updateProgress() {
+      const windowHeight = window.innerHeight;
+      const documentHeight = document.documentElement.scrollHeight;
+      const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+      const scrollableHeight = documentHeight - windowHeight;
+      const progress = (scrollTop / scrollableHeight) * 100;
+
+      this.progressBar.style.width = `${Math.min(progress, 100)}%`;
+    }
+
+    updateBackToTopButton() {
+      if (!this.backToTopBtn) return;
+
+      const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+
+      if (scrollTop > 500) {
+        this.backToTopBtn.classList.add('visible');
+      } else {
+        this.backToTopBtn.classList.remove('visible');
+      }
+    }
+  }
+
+  // Initialize scroll progress
+  document.addEventListener('DOMContentLoaded', () => {
+    new ScrollProgress();
+  });
+</script>
+
+<style>
+  .scroll-progress-container {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 3px;
+    background: var(--color-blush-light);
+    z-index: 10001;
+  }
+
+  .scroll-progress-bar {
+    height: 100%;
+    background: linear-gradient(90deg, var(--color-champagne) 0%, var(--color-text) 100%);
+    width: 0%;
+    transition: width 0.1s ease-out;
+    box-shadow: 0 0 10px rgba(212, 175, 55, 0.5);
+  }
+
+  /* Alternative style - Circle progress (optional) */
+  .scroll-progress-circle {
+    position: fixed;
+    bottom: 2rem;
+    right: 2rem;
+    width: 50px;
+    height: 50px;
+    z-index: 1000;
+    display: none; /* Enable if you prefer circle style */
+  }
+
+  .scroll-progress-circle svg {
+    transform: rotate(-90deg);
+    width: 100%;
+    height: 100%;
+  }
+
+  .scroll-progress-circle-bg {
+    fill: none;
+    stroke: var(--color-blush-light);
+    stroke-width: 3;
+  }
+
+  .scroll-progress-circle-bar {
+    fill: none;
+    stroke: var(--color-champagne);
+    stroke-width: 3;
+    stroke-linecap: round;
+    stroke-dasharray: 150.8;
+    stroke-dashoffset: 150.8;
+    transition: stroke-dashoffset 0.1s ease-out;
+  }
+
+  .scroll-progress-circle:hover .scroll-progress-circle-bar {
+    stroke: var(--color-text);
+  }
+
+  /* Back to top button (appears when scrolled) */
+  .back-to-top {
+    position: fixed;
+    bottom: 2rem;
+    right: 2rem;
+    width: 50px;
+    height: 50px;
+    background: var(--color-champagne);
+    color: var(--color-white);
+    border: none;
+    border-radius: 50%;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(20px);
+    transition: all 0.3s ease;
+    z-index: 1000;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  }
+
+  .back-to-top.visible {
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(0);
+  }
+
+  .back-to-top:hover {
+    background: var(--color-text);
+    transform: translateY(-4px);
+    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.2);
+  }
+
+  .back-to-top:active {
+    transform: translateY(-2px);
+  }
+
+  @media (max-width: 768px) {
+    .scroll-progress-container {
+      height: 2px;
+    }
+
+    .back-to-top {
+      bottom: 1.5rem;
+      right: 1.5rem;
+      width: 45px;
+      height: 45px;
+    }
+  }
+</style>

@@ -1,0 +1,282 @@
+{% comment %}
+  La Camille - Advanced Lazy Loading
+  Improves page load performance by deferring image loading
+{% endcomment %}
+
+<script>
+  class LazyLoader {
+    constructor() {
+      this.lazyImages = document.querySelectorAll('img[data-src], img[loading="lazy"]');
+      this.lazyBackgrounds = document.querySelectorAll('[data-bg-src]');
+      this.init();
+    }
+
+    init() {
+      // Check if browser supports Intersection Observer
+      if ('IntersectionObserver' in window) {
+        this.setupIntersectionObserver();
+      } else {
+        // Fallback for older browsers
+        this.loadAllImages();
+      }
+    }
+
+    setupIntersectionObserver() {
+      const imageObserver = new IntersectionObserver((entries, observer) => {
+        entries.forEach(entry => {
+          if (entry.isIntersecting) {
+            const element = entry.target;
+
+            if (element.tagName === 'IMG') {
+              this.loadImage(element);
+            } else if (element.hasAttribute('data-bg-src')) {
+              this.loadBackground(element);
+            }
+
+            observer.unobserve(element);
+          }
+        });
+      }, {
+        rootMargin: '50px 0px',
+        threshold: 0.01
+      });
+
+      // Observe images
+      this.lazyImages.forEach(img => {
+        if (img.dataset.src) {
+          imageObserver.observe(img);
+        }
+      });
+
+      // Observe background elements
+      this.lazyBackgrounds.forEach(el => {
+        imageObserver.observe(el);
+      });
+    }
+
+    loadImage(img) {
+      const src = img.dataset.src;
+
+      if (!src) return;
+
+      // Load the image
+      img.src = src;
+
+      // Handle load event
+      img.addEventListener('load', () => {
+        img.classList.add('loaded');
+        img.removeAttribute('data-src');
+      });
+
+      // Handle error
+      img.addEventListener('error', () => {
+        img.classList.add('error');
+        // Optionally load a fallback image
+        if (img.dataset.fallback) {
+          img.src = img.dataset.fallback;
+        }
+      });
+    }
+
+    loadBackground(element) {
+      const bgSrc = element.dataset.bgSrc;
+
+      if (!bgSrc) return;
+
+      // Create a temp image to preload
+      const tempImg = new Image();
+      tempImg.src = bgSrc;
+
+      tempImg.addEventListener('load', () => {
+        element.style.backgroundImage = `url(${bgSrc})`;
+        element.classList.add('bg-loaded');
+        element.removeAttribute('data-bg-src');
+      });
+    }
+
+    loadAllImages() {
+      // Fallback - load all images immediately
+      this.lazyImages.forEach(img => {
+        if (img.dataset.src) {
+          img.src = img.dataset.src;
+          img.classList.add('loaded');
+        }
+      });
+
+      this.lazyBackgrounds.forEach(el => {
+        if (el.dataset.bgSrc) {
+          el.style.backgroundImage = `url(${el.dataset.bgSrc})`;
+          el.classList.add('bg-loaded');
+        }
+      });
+    }
+
+    // Add support for dynamically added images
+    observeNewImages() {
+      this.lazyImages = document.querySelectorAll('img[data-src]:not(.loaded)');
+      this.lazyBackgrounds = document.querySelectorAll('[data-bg-src]:not(.bg-loaded)');
+      this.setupIntersectionObserver();
+    }
+  }
+
+  // Initialize lazy loading
+  document.addEventListener('DOMContentLoaded', () => {
+    window.lazyLoader = new LazyLoader();
+
+    // Re-observe images after AJAX calls
+    const originalFetch = window.fetch;
+    window.fetch = function(...args) {
+      return originalFetch.apply(this, args).then(response => {
+        setTimeout(() => {
+          if (window.lazyLoader) {
+            window.lazyLoader.observeNewImages();
+          }
+        }, 1000);
+        return response;
+      });
+    };
+  });
+
+  // Also observe after Shopify section rendering
+  document.addEventListener('shopify:section:load', () => {
+    if (window.lazyLoader) {
+      window.lazyLoader.observeNewImages();
+    }
+  });
+</script>
+
+<style>
+  /* Loading placeholder styles */
+  img[data-src],
+  [data-bg-src] {
+    opacity: 0;
+    transition: opacity 0.6s ease;
+  }
+
+  img.loaded,
+  .bg-loaded {
+    opacity: 1;
+  }
+
+  img.error {
+    opacity: 1;
+    background: repeating-linear-gradient(
+      45deg,
+      var(--color-cream-dark),
+      var(--color-cream-dark) 10px,
+      var(--color-blush-light) 10px,
+      var(--color-blush-light) 20px
+    );
+    min-height: 200px;
+  }
+
+  /* Skeleton loading animation */
+  img[data-src] {
+    background: linear-gradient(
+      90deg,
+      var(--color-cream-dark) 25%,
+      var(--color-blush-light) 50%,
+      var(--color-cream-dark) 75%
+    );
+    background-size: 200% 100%;
+    animation: skeleton-loading 1.5s ease-in-out infinite;
+  }
+
+  @keyframes skeleton-loading {
+    0% {
+      background-position: 200% 0;
+    }
+    100% {
+      background-position: -200% 0;
+    }
+  }
+
+  /* Progressive enhancement - show low-res version first */
+  img[data-src][src] {
+    filter: blur(10px);
+    transform: scale(1.02);
+  }
+
+  img.loaded {
+    filter: blur(0);
+    transform: scale(1);
+  }
+
+  /* Lazy load placeholder */
+  .lazy-load-placeholder {
+    position: relative;
+    overflow: hidden;
+    background: var(--color-cream-dark);
+  }
+
+  .lazy-load-placeholder::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(
+      90deg,
+      transparent,
+      rgba(255, 255, 255, 0.3),
+      transparent
+    );
+    animation: shimmer 1.5s infinite;
+  }
+
+  @keyframes shimmer {
+    100% {
+      left: 100%;
+    }
+  }
+
+  /* Product card lazy loading */
+  .product-card-animated img[data-src] {
+    background: var(--color-cream);
+  }
+
+  /* Collection banner lazy loading */
+  .collection-image img[data-src] {
+    background: var(--color-blush-light);
+  }
+
+  /* Optimized responsive images */
+  .responsive-image {
+    position: relative;
+    overflow: hidden;
+  }
+
+  .responsive-image img {
+    width: 100%;
+    height: auto;
+    object-fit: cover;
+  }
+</style>
+
+{% comment %}
+  USAGE EXAMPLES:
+
+  1. Basic lazy-loaded image:
+  <img data-src="{{ image | img_url: '800x' }}" alt="Product" loading="lazy">
+
+  2. Lazy-loaded image with fallback:
+  <img data-src="{{ image | img_url: '800x' }}"
+       data-fallback="{{ 'placeholder.jpg' | asset_url }}"
+       alt="Product"
+       loading="lazy">
+
+  3. Lazy-loaded background:
+  <div data-bg-src="{{ image | img_url: '1920x' }}" class="hero-section">
+    Content here
+  </div>
+
+  4. Responsive lazy-loaded image:
+  <img data-src="{{ image | img_url: '1200x' }}"
+       src="{{ image | img_url: '300x' }}"
+       alt="Product"
+       loading="lazy">
+
+  Note: Shopify automatically adds loading="lazy" to images in newer themes
+  but this script provides additional control and features
+{% endcomment %}
