@@ -1,0 +1,128 @@
+{% schema %}
+{
+  "name": "Hero Parallax",
+  "tag": "section",
+  "class": "hero-intro parallax-section",
+  "settings": [
+    {
+      "type": "select",
+      "id": "height",
+      "label": "Section height",
+      "options": [
+        {
+          "value": "100vh",
+          "label": "Full screen"
+        },
+        {
+          "value": "80vh",
+          "label": "4/5 screen"
+        },
+        {
+          "value": "60vh",
+          "label": "3/5 screen"
+        }
+      ],
+      "default": "100vh"
+    },
+    {
+      "type": "image_picker",
+      "id": "background_image",
+      "label": "Background image"
+    },
+    {
+      "type": "range",
+      "id": "overlay_opacity",
+      "min": 0,
+      "max": 100,
+      "step": 5,
+      "label": "Overlay opacity",
+      "default": 70
+    }
+  ],
+  "blocks": [
+    {
+      "type": "logo_reveal",
+      "name": "Logo & Tagline",
+      "limit": 1,
+      "settings": [
+        {
+          "type": "text",
+          "id": "title",
+          "label": "Title",
+          "default": "LA CAMILLE"
+        },
+        {
+          "type": "textarea",
+          "id": "tagline",
+          "label": "Tagline",
+          "default": "Egyptian Luxury Lingerie & Pajamas"
+        },
+        {
+          "type": "text",
+          "id": "button_label",
+          "label": "Button label",
+          "default": "Discover Collection"
+        },
+        {
+          "type": "url",
+          "id": "button_link",
+          "label": "Button link"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Hero Parallax",
+      "blocks": [
+        {
+          "type": "logo_reveal"
+        }
+      ]
+    }
+  ]
+}
+{% endschema %}
+
+{% style %}
+  .hero-intro {
+    height: {{ section.settings.height }};
+  }
+
+  .hero-intro .parallax-overlay {
+    opacity: {{ section.settings.overlay_opacity | divided_by: 100.0 }};
+  }
+{% endstyle %}
+
+<div class="parallax-container">
+  {% if section.settings.background_image %}
+    <div class="parallax-bg" data-speed="0.5" style="background-image: url('{{ section.settings.background_image | image_url: width: 1920 }}');"></div>
+  {% endif %}
+
+  <div class="parallax-overlay"></div>
+
+  {% for block in section.blocks %}
+    <div class="parallax-content" {{ block.shopify_attributes }}>
+      <h1 class="hero-logo-reveal">{{ block.settings.title }}</h1>
+      <p class="hero-tagline">{{ block.settings.tagline }}</p>
+
+      {% if block.settings.button_label != blank %}
+        <a href="{{ block.settings.button_link }}" class="btn-primary">
+          {{ block.settings.button_label }}
+        </a>
+      {% endif %}
+    </div>
+  {% endfor %}
+</div>
+
+{% javascript %}
+document.addEventListener('DOMContentLoaded', function() {
+  // Trigger logo animation after a short delay
+  const heroContent = document.querySelector('.hero-intro .parallax-content');
+  if (heroContent) {
+    setTimeout(() => {
+      heroContent.classList.add('visible');
+    }, 500);
+  }
+});
+{% endjavascript %}

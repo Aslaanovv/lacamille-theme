@@ -1,0 +1,52 @@
+{
+  "general": {
+    "shopify": "Shopify",
+    "search": "Search",
+    "cart": "Cart",
+    "account": "Account",
+    "home": "Home",
+    "menu": "Menu",
+    "close": "Close"
+  },
+  "products": {
+    "product": "Product",
+    "products": "Products",
+    "sold_out": "Sold Out",
+    "on_sale": "Sale",
+    "from": "from",
+    "add_to_cart": "Add to Bag",
+    "quick_add": "Quick Add",
+    "view_details": "View Details",
+    "new": "New",
+    "vendor": "Vendor",
+    "type": "Type",
+    "color": "Color",
+    "size": "Size"
+  },
+  "collections": {
+    "collection": "Collection",
+    "collections": "Collections",
+    "all_products": "All Products",
+    "shop_all": "Shop All",
+    "view_collection": "View Collection"
+  },
+  "navigation": {
+    "shop": "Shop",
+    "lingerie": "Lingerie",
+    "pajamas": "Pajamas",
+    "new_arrivals": "New Arrivals",
+    "best_sellers": "Best Sellers",
+    "about": "About Us",
+    "contact": "Contact",
+    "account": "Account"
+  },
+  "hero": {
+    "discover_collection": "Discover Collection"
+  },
+  "story": {
+    "egyptian_heritage": "Egyptian Heritage",
+    "handcrafted": "Handcrafted with precision",
+    "luxury": "Luxury materials",
+    "comfort": "Unmatched comfort"
+  }
+}

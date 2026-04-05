@@ -1,0 +1,210 @@
+{% schema %}
+{
+  "name": "Featured Products",
+  "tag": "section",
+  "class": "featured-products-section",
+  "settings": [
+    {
+      "type": "text",
+      "id": "title",
+      "label": "Section title",
+      "default": "New Arrivals"
+    },
+    {
+      "type": "collection",
+      "id": "collection",
+      "label": "Collection"
+    },
+    {
+      "type": "range",
+      "id": "product_count",
+      "min": 4,
+      "max": 12,
+      "step": 4,
+      "default": 8,
+      "label": "Products to show"
+    }
+  ],
+  "presets": [
+    {
+      "name": "Featured Products"
+    }
+  ]
+}
+{% endschema %}
+
+{% style %}
+  .featured-products-section {
+    padding: 8rem 2rem;
+    background: var(--color-cream);
+  }
+
+  .featured-products-container {
+    max-width: 1400px;
+    margin: 0 auto;
+  }
+
+  .section-title {
+    font-family: var(--font-heading);
+    font-size: clamp(2.5rem, 5vw, 4rem);
+    font-weight: 300;
+    text-align: center;
+    margin-bottom: 4rem;
+    color: var(--color-text);
+  }
+
+  .products-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 2rem;
+  }
+
+  .product-card {
+    position: relative;
+    background: var(--color-white);
+    border-radius: 8px;
+    overflow: hidden;
+    transition: var(--transition-smooth);
+  }
+
+  .product-card:hover {
+    transform: translateY(-8px);
+    box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+  }
+
+  .product-image-wrapper {
+    position: relative;
+    overflow: hidden;
+    aspect-ratio: 3 / 4;
+  }
+
+  .product-image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.6s ease;
+  }
+
+  .product-card:hover .product-image {
+    transform: scale(1.05);
+  }
+
+  .product-info {
+    padding: 1.5rem;
+    text-align: center;
+  }
+
+  .product-title {
+    font-family: var(--font-heading);
+    font-size: 1.2rem;
+    font-weight: 400;
+    margin-bottom: 0.5rem;
+    color: var(--color-text);
+  }
+
+  .product-price {
+    font-size: 1rem;
+    color: var(--color-text-light);
+    margin-bottom: 1rem;
+  }
+
+  .product-price .sale-price {
+    color: var(--color-champagne);
+    font-weight: 600;
+  }
+
+  .product-price .compare-price {
+    text-decoration: line-through;
+    opacity: 0.6;
+    margin-left: 0.5rem;
+  }
+
+  .btn-quick-add {
+    width: 100%;
+    padding: 1rem;
+    background: transparent;
+    border: 1px solid var(--color-text);
+    color: var(--color-text);
+    text-transform: uppercase;
+    letter-spacing: 0.15em;
+    font-size: 0.8rem;
+    cursor: pointer;
+    transition: var(--transition-smooth);
+  }
+
+  .btn-quick-add:hover {
+    background: var(--color-text);
+    color: var(--color-white);
+  }
+
+  @media (max-width: 768px) {
+    .products-grid {
+      grid-template-columns: repeat(2, 1fr);
+      gap: 1rem;
+    }
+
+    .featured-products-section {
+      padding: 4rem 1rem;
+    }
+  }
+{% endstyle %}
+
+<section class="featured-products-section">
+  <div class="featured-products-container">
+    {% if section.settings.title != blank %}
+      <h2 class="section-title">{{ section.settings.title }}</h2>
+    {% endif %}
+
+    {% assign collection = collections[section.settings.collection] %}
+
+    {% if collection != blank %}
+      <div class="products-grid">
+        {% for product in collection.products limit: section.settings.product_count %}
+          <div class="product-card">
+            <a href="{{ product.url }}" class="product-image-wrapper">
+              {% if product.featured_image %}
+                {{
+                  product.featured_image
+                  | image_url: width: 600
+                  | image_tag: loading: 'lazy', class: 'product-image'
+                }}
+              {% else %}
+                {{ 'product-1' | placeholder_svg_tag: 'product-image' }}
+              {% endif %}
+            </a>
+
+            <div class="product-info">
+              <h3 class="product-title">
+                <a href="{{ product.url }}">{{ product.title }}</a>
+              </h3>
+
+              <div class="product-price">
+                {% if product.compare_at_price > product.price %}
+                  <span class="sale-price">{{ product.price | money }}</span>
+                  <span class="compare-price">{{ product.compare_at_price | money }}</span>
+                {% else %}
+                  {{ product.price | money }}
+                {% endif %}
+              </div>
+
+              {% if product.available %}
+                <form action="/cart/add" method="post" enctype="multipart/form-data">
+                  <input type="hidden" name="id" value="{{ product.variants.first.id }}">
+                  <button type="submit" class="btn-quick-add">
+                    Quick Add
+                  </button>
+                </form>
+              {% else %}
+                <button class="btn-quick-add" disabled>
+                  Sold Out
+                </button>
+              {% endif %}
+            </div>
+          </div>
+        {% endfor %}
+      </div>
+    {% else %}
+      <p class="text-center">Please select a collection to display products.</p>
+    {% endif %}
+  </div>
+</section>

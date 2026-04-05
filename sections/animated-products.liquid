@@ -1,0 +1,426 @@
+{% schema %}
+{
+  "name": "Animated Products Grid",
+  "tag": "section",
+  "class": "animated-products-section",
+  "settings": [
+    {
+      "type": "text",
+      "id": "title",
+      "label": "Section title",
+      "default": "Discover Our Collection"
+    },
+    {
+      "type": "textarea",
+      "id": "subtitle",
+      "label": "Subtitle",
+      "default": "Handcrafted luxury for the modern woman"
+    },
+    {
+      "type": "collection",
+      "id": "collection",
+      "label": "Collection"
+    },
+    {
+      "type": "range",
+      "id": "product_count",
+      "min": 4,
+      "max": 16,
+      "step": 4,
+      "default": 8,
+      "label": "Products to show"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_vendor",
+      "label": "Show vendor",
+      "default": false
+    },
+    {
+      "type": "checkbox",
+      "id": "show_color_swatches",
+      "label": "Show color swatches",
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "enable_quick_add",
+      "label": "Enable quick add to cart",
+      "default": true
+    }
+  ],
+  "presets": [
+    {
+      "name": "Animated Products Grid"
+    }
+  ]
+}
+{% endschema %}
+
+{% style %}
+  .animated-products-section {
+    padding: 6rem 2rem;
+    background: var(--color-cream);
+  }
+
+  .section-header {
+    text-align: center;
+    margin-bottom: 4rem;
+  }
+
+  .section-header h2 {
+    font-family: var(--font-heading);
+    font-size: clamp(2.5rem, 5vw, 4rem);
+    font-weight: 300;
+    color: var(--color-text);
+    margin-bottom: 1rem;
+  }
+
+  .section-header p {
+    font-size: 1.2rem;
+    color: var(--color-text-light);
+    letter-spacing: 0.1em;
+  }
+
+  .products-grid-animated {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 2.5rem;
+    max-width: 1400px;
+    margin: 0 auto;
+  }
+
+  @media (max-width: 768px) {
+    .products-grid-animated {
+      grid-template-columns: repeat(2, 1fr);
+      gap: 1rem;
+    }
+
+    .animated-products-section {
+      padding: 4rem 1rem;
+    }
+  }
+{% endstyle %}
+
+<section class="animated-products-section">
+  <div class="section-header">
+    {% if section.settings.title != blank %}
+      <h2>{{ section.settings.title }}</h2>
+    {% endif %}
+    {% if section.settings.subtitle != blank %}
+      <p>{{ section.settings.subtitle }}</p>
+    {% endif %}
+  </div>
+
+  {% assign collection = collections[section.settings.collection] %}
+
+  {% if collection != blank %}
+    <div class="products-grid-animated">
+      {% for product in collection.products limit: section.settings.product_count %}
+        {%- liquid
+          assign on_sale = false
+          if product.compare_at_price > product.price
+            assign on_sale = true
+          endif
+
+          assign sold_out = false
+          unless product.available
+            assign sold_out = true
+          endunless
+
+          # Get second image if available
+          assign second_image = ''
+          if product.media.size > 1
+            assign second_image = product.media[1].src
+          endif
+
+          # Get first available variant
+          assign first_variant = product.selected_or_first_available_variant
+        -%}
+
+        <div class="product-card-animated {% if sold_out %}out-of-stock{% endif %}"
+             data-product-id="{{ product.id }}"
+             itemscope
+             itemtype="https://schema.org/Product">
+
+          <!-- Badge -->
+          {% if on_sale %}
+            <span class="product-badge">Sale</span>
+          {% elsif product.tags contains 'New' %}
+            <span class="product-badge" style="background: var(--color-blush);">New</span>
+          {% endif %}
+
+          <!-- Image Wrapper -->
+          <div class="product-card-image-wrapper">
+            <a href="{{ product.url }}" aria-label="{{ product.title }}">
+              {% if product.featured_image %}
+                {{
+                  product.featured_image
+                  | image_url: width: 600
+                  | image_tag:
+                    loading: 'lazy',
+                    class: 'product-card-image',
+                    alt: product.title
+                }}
+                {% if second_image %}
+                  {{
+                    second_image
+                    | image_url: width: 600
+                    | image_tag:
+                      loading: 'lazy',
+                      class: 'product-card-image-secondary',
+                      alt: product.title
+                  }}
+                {% endif %}
+              {% else %}
+                {{ 'product-1' | placeholder_svg_tag: 'product-card-image' }}
+              {% endif %}
+            </a>
+
+            <!-- Quick Actions -->
+            <div class="product-quick-actions">
+              {% if section.settings.enable_quick_add and product.available %}
+                <button class="quick-action-btn quick-add-btn"
+                        data-variant-id="{{ first_variant.id }}"
+                        aria-label="Quick add to cart">
+                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M12 5v14M5 12h14"/>
+                  </svg>
+                </button>
+              {% endif %}
+
+              <button class="quick-action-btn wishlist-btn"
+                      data-product-id="{{ product.id }}"
+                      aria-label="Add to wishlist">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/>
+                </svg>
+              </button>
+
+              <a href="{{ product.url }}" class="quick-action-btn" aria-label="Quick view">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/>
+                  <circle cx="12" cy="12" r="3"/>
+                </svg>
+              </a>
+            </div>
+
+            <!-- Sliding Info Panel -->
+            <div class="product-info-panel">
+              <div class="sliding-info">
+                {% if section.settings.show_vendor and product.vendor %}
+                  <p class="product-vendor" style="font-size: 0.8rem; color: var(--color-text-light); margin-bottom: 0.5rem; text-transform: uppercase; letter-spacing: 0.1em;">
+                    {{ product.vendor }}
+                  </p>
+                {% endif %}
+
+                <h3 class="sliding-title">
+                  <a href="{{ product.url }}">{{ product.title }}</a>
+                </h3>
+
+                <div class="sliding-price">
+                  {% if on_sale %}
+                    <span class="sale-price">{{ product.price | money }}</span>
+                    <span class="compare-price">{{ product.compare_at_price | money }}</span>
+                  {% else %}
+                    {{ product.price | money }}
+                  {% endif %}
+                </div>
+
+                {% if section.settings.show_color_swatches and product.options_by_name['Color'].values.size > 0 %}
+                  <div class="product-colors">
+                    {% for color in product.options_by_name['Color'].values limit: 5 %}
+                      <span class="color-swatch {% if forloop.first %}active{% endif %}"
+                            style="background-color: {{ color | handle | replace: '-', '' }};"
+                            title="{{ color }}"
+                            data-color="{{ color }}"></span>
+                    {% endfor %}
+                    {% if product.options_by_name['Color'].values.size > 5 %}
+                      <span style="font-size: 0.75rem; color: var(--color-text-light);">+{{ product.options_by_name['Color'].values.size | minus: 5 }}</span>
+                    {% endif %}
+                  </div>
+                {% endif %}
+
+                <div class="sliding-actions">
+                  {% if product.available %}
+                    <form action="/cart/add" method="post" enctype="multipart/form-data">
+                      <input type="hidden" name="id" value="{{ first_variant.id }}">
+                      <button type="submit" class="btn-add-cart">Add to Bag</button>
+                    </form>
+                  {% else %}
+                    <button class="btn-add-cart" disabled>Sold Out</button>
+                  {% endif %}
+                  <a href="{{ product.url }}" class="btn-view-details">View Details</a>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Static Info (Visible when not hovered) -->
+          <div class="product-static-info">
+            <h3 class="product-title">
+              <a href="{{ product.url }}">{{ product.title }}</a>
+            </h3>
+            <div class="product-price">
+              {% if on_sale %}
+                <span class="sale-price">{{ product.price | money }}</span>
+                <span class="compare-price">{{ product.compare_at_price | money }}</span>
+              {% else %}
+                {{ product.price | money }}
+              {% endif %}
+            </div>
+          </div>
+
+          <!-- Schema.org markup -->
+          <meta itemprop="name" content="{{ product.title }}">
+          <meta itemprop="url" content="{{ shop.url }}{{ product.url }}">
+          <meta itemprop="image" content="{{ product.featured_image | image_url: width: 600 }}">
+          <meta itemprop="price" content="{{ product.price | money_without_currency }}">
+          <meta itemprop="priceCurrency" content="{{ cart.currency.iso_code }}">
+          <link itemprop="availability" href="https://schema.org/{% if product.available %}InStock{% else %}OutOfStock{% endif %}">
+        </div>
+      {% endfor %}
+    </div>
+  {% else %}
+    <div class="text-center">
+      <p>Please select a collection to display products.</p>
+    </div>
+  {% endif %}
+</section>
+
+{% javascript %}
+document.addEventListener('DOMContentLoaded', function() {
+  // Quick add functionality
+  const quickAddButtons = document.querySelectorAll('.quick-add-btn');
+
+  quickAddButtons.forEach(button => {
+    button.addEventListener('click', async function(e) {
+      e.preventDefault();
+      e.stopPropagation();
+
+      const variantId = this.dataset.variantId;
+      const productCard = this.closest('.product-card-animated');
+
+      // Add loading state
+      productCard.classList.add('loading');
+
+      try {
+        const response = await fetch('/cart/add.js', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            id: variantId,
+            quantity: 1
+          })
+        });
+
+        const data = await response.json();
+
+        // Update cart count
+        const cartCount = document.querySelector('.cart-count');
+        if (cartCount) {
+          const currentCount = parseInt(cartCount.textContent) || 0;
+          cartCount.textContent = currentCount + 1;
+        }
+
+        // Show success feedback
+        showNotification('Added to bag!', 'success');
+
+      } catch (error) {
+        console.error('Error adding to cart:', error);
+        showNotification('Unable to add item', 'error');
+      } finally {
+        productCard.classList.remove('loading');
+      }
+    });
+  });
+
+  // Wishlist toggle
+  const wishlistButtons = document.querySelectorAll('.wishlist-btn');
+
+  wishlistButtons.forEach(button => {
+    button.addEventListener('click', function(e) {
+      e.preventDefault();
+      e.stopPropagation();
+
+      const productId = this.dataset.productId;
+      this.classList.toggle('active');
+
+      const svg = this.querySelector('svg');
+      if (this.classList.contains('active')) {
+        svg.setAttribute('fill', 'currentColor');
+        showNotification('Added to wishlist', 'success');
+      } else {
+        svg.setAttribute('fill', 'none');
+        showNotification('Removed from wishlist', 'success');
+      }
+    });
+  });
+
+  // Color swatch selection
+  const colorSwatches = document.querySelectorAll('.color-swatch');
+
+  colorSwatches.forEach(swatch => {
+    swatch.addEventListener('click', function() {
+      const parent = this.closest('.product-colors');
+      parent.querySelectorAll('.color-swatch').forEach(s => s.classList.remove('active'));
+      this.classList.add('active');
+    });
+  });
+
+  // Notification function
+  function showNotification(message, type = 'success') {
+    const notification = document.createElement('div');
+    notification.className = `notification notification-${type}`;
+    notification.textContent = message;
+    notification.style.cssText = `
+      position: fixed;
+      bottom: 2rem;
+      right: 2rem;
+      padding: 1rem 2rem;
+      background: ${type === 'success' ? 'var(--color-champagne)' : '#e74c3c'};
+      color: white;
+      border-radius: 4px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+      z-index: 9999;
+      animation: slideIn 0.3s ease;
+    `;
+
+    document.body.appendChild(notification);
+
+    setTimeout(() => {
+      notification.style.animation = 'slideOut 0.3s ease';
+      setTimeout(() => notification.remove(), 300);
+    }, 2000);
+  }
+
+  // Add keyframes for notifications
+  const style = document.createElement('style');
+  style.textContent = `
+    @keyframes slideIn {
+      from {
+        opacity: 0;
+        transform: translateY(20px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    @keyframes slideOut {
+      from {
+        opacity: 1;
+        transform: translateY(0);
+      }
+      to {
+        opacity: 0;
+        transform: translateY(20px);
+      }
+    }
+  `;
+  document.head.appendChild(style);
+});
+{% endjavascript %}

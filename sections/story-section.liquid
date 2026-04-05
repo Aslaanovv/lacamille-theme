@@ -1,0 +1,127 @@
+{% schema %}
+{
+  "name": "Story Section",
+  "tag": "section",
+  "class": "story-section",
+  "settings": [
+    {
+      "type": "checkbox",
+      "id": "full_width",
+      "label": "Full width",
+      "default": false
+    }
+  ],
+  "blocks": [
+    {
+      "type": "story_block",
+      "name": "Story Block",
+      "settings": [
+        {
+          "type": "image_picker",
+          "id": "image",
+          "label": "Image"
+        },
+        {
+          "type": "select",
+          "id": "image_position",
+          "label": "Image position",
+          "options": [
+            {
+              "value": "left",
+              "label": "Left"
+            },
+            {
+              "value": "right",
+              "label": "Right"
+            }
+          ],
+          "default": "right"
+        },
+        {
+          "type": "text",
+          "id": "title",
+          "label": "Title",
+          "default": "Egyptian Heritage"
+        },
+        {
+          "type": "richtext",
+          "id": "text",
+          "label": "Text",
+          "default": "<p>Born from the timeless elegance of Egyptian craftsmanship, La Camille embodies the perfect union of luxury and comfort.</p>"
+        },
+        {
+          "type": "text",
+          "id": "button_label",
+          "label": "Button label",
+          "default": "Learn More"
+        },
+        {
+          "type": "url",
+          "id": "button_link",
+          "label": "Button link"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Story Section",
+      "blocks": [
+        {
+          "type": "story_block"
+        }
+      ]
+    }
+  ]
+}
+{% endschema %}
+
+<section class="story-section {% if section.settings.full_width %}full-width{% endif %}">
+  <div class="story-content">
+    {% for block in section.blocks %}
+      {% if block.settings.image_position == 'right' %}
+        <div class="story-text" {{ block.shopify_attributes }}>
+          <h2 class="story-title">{{ block.settings.title }}</h2>
+          <div class="story-description">{{ block.settings.text }}</div>
+          {% if block.settings.button_label != blank %}
+            <a href="{{ block.settings.button_link }}" class="btn-secondary">
+              {{ block.settings.button_label }}
+            </a>
+          {% endif %}
+        </div>
+        <div class="story-image">
+          {% if block.settings.image %}
+            {{
+              block.settings.image
+              | image_url: width: 800
+              | image_tag: loading: 'lazy', class: 'story-img'
+            }}
+          {% else %}
+            {{ 'image' | placeholder_svg_tag: 'placeholder-svg' }}
+          {% endif %}
+        </div>
+      {% else %}
+        <div class="story-image">
+          {% if block.settings.image %}
+            {{
+              block.settings.image
+              | image_url: width: 800
+              | image_tag: loading: 'lazy', class: 'story-img'
+            }}
+          {% else %}
+            {{ 'image' | placeholder_svg_tag: 'placeholder-svg' }}
+          {% endif %}
+        </div>
+        <div class="story-text" {{ block.shopify_attributes }}>
+          <h2 class="story-title">{{ block.settings.title }}</h2>
+          <div class="story-description">{{ block.settings.text }}</div>
+          {% if block.settings.button_label != blank %}
+            <a href="{{ block.settings.button_link }}" class="btn-secondary">
+              {{ block.settings.button_label }}
+            </a>
+          {% endif %}
+        </div>
+      {% endif %}
+    {% endfor %}
+  </div>
+</section>

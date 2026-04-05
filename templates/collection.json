@@ -1,0 +1,30 @@
+{
+  "sections": {
+    "banner": {
+      "type": "collection-banner",
+      "settings": {
+        "show_collection_image": true,
+        "show_collection_title": true,
+        "show_collection_description": true
+      }
+    },
+    "products": {
+      "type": "animated-products",
+      "blocks": {
+        "title": {
+          "type": "title",
+          "settings": {
+            "show_vendor": true
+          }
+        }
+      },
+      "block_order": ["title"],
+      "settings": {
+        "product_count": 16,
+        "show_color_swatches": true,
+        "enable_quick_add": true
+      }
+    }
+  },
+  "order": ["banner", "products"]
+}

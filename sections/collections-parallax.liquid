@@ -1,0 +1,150 @@
+{% schema %}
+{
+  "name": "Collections Parallax",
+  "tag": "section",
+  "class": "collections-parallax",
+  "settings": [
+    {
+      "type": "text",
+      "id": "section_title",
+      "label": "Section title",
+      "default": "Our Collections"
+    },
+    {
+      "type": "select",
+      "id": "layout",
+      "label": "Layout",
+      "options": [
+        {
+          "value": "grid",
+          "label": "Grid"
+        },
+        {
+          "value": "stacked",
+          "label": "Stacked"
+        }
+      ],
+      "default": "stacked"
+    }
+  ],
+  "blocks": [
+    {
+      "type": "collection",
+      "name": "Collection",
+      "settings": [
+        {
+          "type": "collection",
+          "id": "collection",
+          "label": "Collection"
+        },
+        {
+          "type": "image_picker",
+          "id": "custom_image",
+          "label": "Custom image (optional)"
+        },
+        {
+          "type": "text",
+          "id": "title",
+          "label": "Title",
+          "info": "Leave blank to use collection title"
+        },
+        {
+          "type": "range",
+          "id": "overlay_opacity",
+          "min": 0,
+          "max": 100,
+          "step": 5,
+          "label": "Overlay opacity",
+          "default": 50
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Collections Parallax",
+      "blocks": [
+        {
+          "type": "collection"
+        },
+        {
+          "type": "collection"
+        }
+      ]
+    }
+  ]
+}
+{% endschema %}
+
+<section class="collections-parallax">
+  <div class="container">
+    {% if section.settings.section_title != blank %}
+      <h2 class="text-center mb-lg">{{ section.settings.section_title }}</h2>
+    {% endif %}
+
+    <div class="collections-wrapper {% if section.settings.layout == 'grid' %}collections-grid{% endif %}">
+      {% for block in section.blocks %}
+        {% assign collection = collections[block.settings.collection] %}
+
+        {% if collection != blank %}
+          <div class="collection-card" {{ block.shopify_attributes }}>
+            {% if block.settings.custom_image %}
+              {{
+                block.settings.custom_image
+                | image_url: width: 1920
+                | image_tag: loading: 'lazy', class: 'collection-image'
+              }}
+            {% elsif collection.image %}
+              {{
+                collection.image
+                | image_url: width: 1920
+                | image_tag: loading: 'lazy', class: 'collection-image'
+              }}
+            {% elsif collection.products.first.featured_image %}
+              {{
+                collection.products.first.featured_image
+                | image_url: width: 1920
+                | image_tag: loading: 'lazy', class: 'collection-image'
+              }}
+            {% else %}
+              {{ 'collection-1' | placeholder_svg_tag: 'placeholder-svg collection-image' }}
+            {% endif %}
+
+            <div class="collection-overlay" style="opacity: {{ block.settings.overlay_opacity | divided_by: 100.0 }};">
+              <h3 class="collection-title">
+                {% if block.settings.title != blank %}
+                  {{ block.settings.title }}
+                {% else %}
+                  {{ collection.title }}
+                {% endif %}
+              </h3>
+              <a href="{{ collection.url }}" class="collection-link">
+                Shop Collection
+              </a>
+            </div>
+          </div>
+        {% endif %}
+      {% endfor %}
+    </div>
+  </div>
+</section>
+
+{% style %}
+  .collections-wrapper {
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 0 2rem;
+  }
+
+  .collections-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(500px, 1fr));
+    gap: 2rem;
+  }
+
+  @media (max-width: 768px) {
+    .collections-grid {
+      grid-template-columns: 1fr;
+    }
+  }
+{% endstyle %}

@@ -1,0 +1,18 @@
+{
+  "current": {
+    "color_cream": "#FDF8F3",
+    "color_blush": "#E8D4C4",
+    "color_champagne": "#D4AF37",
+    "color_text": "#4A4A4A",
+    "heading_font": {
+      "family": "Cormorant Garamond",
+      "weight": 400,
+      "style": "normal"
+    },
+    "body_font": {
+      "family": "Montserrat",
+      "weight": 400,
+      "style": "normal"
+    }
+  }
+}

@@ -1,0 +1,82 @@
+{
+  "sections": {
+    "hero": {
+      "type": "hero-parallax",
+      "blocks": {
+        "logo_reveal": {
+          "type": "logo_reveal",
+          "settings": {
+            "title": "LA CAMILLE",
+            "tagline": "Egyptian Luxury Lingerie & Pajamas",
+            "button_label": "Discover Collection",
+            "button_link": "/collections/all"
+          }
+        }
+      },
+      "block_order": ["logo_reveal"],
+      "settings": {
+        "height": "100vh",
+        "overlay_opacity": 70
+      }
+    },
+    "story": {
+      "type": "story-section",
+      "blocks": {
+        "heritage": {
+          "type": "story_block",
+          "settings": {
+            "title": "Egyptian Heritage",
+            "text": "Born from the timeless elegance of Egyptian craftsmanship, La Camille embodies the perfect union of luxury and comfort. Each piece is meticulously crafted using the finest fabrics, honoring a tradition of excellence that spans millennia.",
+            "image_position": "right",
+            "button_label": "Our Story",
+            "button_link": "/pages/about"
+          }
+        }
+      },
+      "block_order": ["heritage"],
+      "settings": {}
+    },
+    "collections": {
+      "type": "collections-parallax",
+      "blocks": {
+        "lingerie": {
+          "type": "collection",
+          "settings": {
+            "collection": "lingerie",
+            "title": "Lingerie Collection",
+            "overlay_opacity": 50
+          }
+        },
+        "pajamas": {
+          "type": "collection",
+          "settings": {
+            "collection": "pajamas",
+            "title": "Luxury Pajamas",
+            "overlay_opacity": 50
+          }
+        }
+      },
+      "block_order": ["lingerie", "pajamas"],
+      "settings": {
+        "section_title": "Our Collections"
+      }
+    },
+    "featured_products": {
+      "type": "animated-products",
+      "settings": {
+        "title": "New Arrivals",
+        "subtitle": "Handcrafted luxury for the modern woman",
+        "product_count": 8,
+        "show_vendor": true,
+        "show_color_swatches": true,
+        "enable_quick_add": true
+      }
+    }
+  },
+  "order": [
+    "hero",
+    "story",
+    "collections",
+    "featured_products"
+  ]
+}

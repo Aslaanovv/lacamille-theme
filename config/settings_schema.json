@@ -1,0 +1,50 @@
+{
+  "name": "La Camille Theme",
+  "theme_version": "1.0.0",
+  "settings": [
+    {
+      "type": "header",
+      "content": "Brand Colors"
+    },
+    {
+      "type": "color",
+      "id": "color_cream",
+      "label": "Cream",
+      "default": "#FDF8F3"
+    },
+    {
+      "type": "color",
+      "id": "color_blush",
+      "label": "Blush",
+      "default": "#E8D4C4"
+    },
+    {
+      "type": "color",
+      "id": "color_champagne",
+      "label": "Champagne",
+      "default": "#D4AF37"
+    },
+    {
+      "type": "color",
+      "id": "color_text",
+      "label": "Text Color",
+      "default": "#4A4A4A"
+    },
+    {
+      "type": "header",
+      "content": "Typography"
+    },
+    {
+      "type": "font_picker",
+      "id": "font_heading",
+      "label": "Heading Font",
+      "default": "serif"
+    },
+    {
+      "type": "font_picker",
+      "id": "font_body",
+      "label": "Body Font",
+      "default": "sans-serif"
+    }
+  ]
+}
